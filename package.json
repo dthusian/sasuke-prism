@@ -1,0 +1,22 @@
+{
+  "name": "discordbot",
+  "version": "2.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "discord.js": "^12.2.0",
+    "form-data": "^3.0.0",
+    "mysql": "^2.18.1",
+    "node-fetch": "^2.6.0"
+  },
+  "devDependencies": {
+    "eslint": "^7.7.0"
+  },
+  "scripts": {
+    "start": "./launch",
+    "stop": "./quit",
+    "test": "./node_modules/.bin/eslint ./injectors/**/*.js"
+  },
+  "author": "",
+  "license": "MIT"
+}

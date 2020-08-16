@@ -1,0 +1,26 @@
+{
+  "env": {
+    "commonjs": true,
+    "es2020": true,
+    "node": true
+  },
+  "extends": "eslint:recommended",
+  "parserOptions": {
+    "ecmaVersion": 11
+  },
+  "rules": {
+    "no-debugger": "off",
+    "no-loss-of-precision": "error",
+    "no-template-curly-in-string": "error",
+    "no-unreachable-loop": "error",
+    "eqeqeq": "error",
+    "no-eval": "error",
+    "no-extend-native": "error",
+    "no-implied-eval": "error",
+    "no-loop-func": "error",
+    "no-new-wrappers": "error",
+    "no-proto": "error",
+    "no-throw-literal": "error",
+    "strict": ["error", "global"]
+  }
+}
