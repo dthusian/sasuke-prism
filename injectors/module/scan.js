@@ -1,23 +1,16 @@
 "use strict";
 
-var djs = require("discord.js");
-var fetch = require("node-fetch");
-var FormData = require("form-data");
-var crypto = require("crypto");
+const djs = require("discord.js");
+const fetch = require("node-fetch");
+const FormData = require("form-data");
+const crypto = require("crypto");
+const fs = require("fs");
+const VTCACHE_SUBDIR = "vtcache/";
 var vttoken;
-const stream = require("stream");
+var fileScanQueue = [];
 
 function resolveUpload(file){
-  if(typeof file === "string") return fetch(file).then(v => v.buffer());
-  if(file instanceof Buffer) return file.toString("utf-8");
-  if(file instanceof stream.Stream) {
-    return new Promise((resolve, reject) => {
-      var data = "";
-      file.on("data", chunk => void (data += chunk));
-      file.on("end", () => resolve(Buffer.from(data)));
-      file.on("error", err => reject(err));
-    });
-  }
+  return fetch(file).then(v => v.buffer());
 }
 
 function sleep(ms){
@@ -47,6 +40,7 @@ const ignoreFtypes = [
   ".jpeg",
   ".jpg",
   ".mp4",
+  ".mov",
   ".ogg",
   ".webm",
   ".txt",
@@ -57,6 +51,33 @@ function hasIngoredFiletype(filepath){
   return !ignoreFtypes.every(v => !lower.endsWith(v));
 }
 
+async function findAnalysis(token, sha, buf, cacheDir){
+  // 1: Check local cache for analysis
+  var localCachePath = cacheDir + sha + ".json";
+  if(fs.existsSync(localCachePath)){
+    // Analysis in local cache, return it
+    return await new Promise((resolve, reject) => {
+      fs.readFile(localCachePath, (err, data) => {
+        if(err) {
+          reject(err);
+        } else {
+          resolve(JSON.parse(data.toString("utf-8")));
+        }
+      });
+    });
+  }
+  // 2: Check if VirusTotal already has an analysis
+  var res = await vtRestCall(token, `files/${sha}/analyse`, "POST");
+  if(res["data"]){
+    // The analysis was found and we just have to retrieve it now
+    var aid = res["data"]["id"];
+    res = await vtRestCall(token, `analyses/${aid}`, "GET");
+    return res;
+  }
+  // 3: Upload and scan the file
+  res = await vtRestCall(token, ``);
+}
+
 module.exports = function injectorMain(bot, gs) {
   const scanEmbedCol = gs.colors.CYAN;
   vttoken = gs.getToken("virustotal");
@@ -64,6 +85,8 @@ module.exports = function injectorMain(bot, gs) {
   bot.on("message", async (msg) => {
     if(msg.attachments.array().length){
       // Get attachments
+      // Only get first
+      // It's a bruh if they send more
       var attachment = msg.attachments.first();
       var url = attachment.url;
       if(hasIngoredFiletype(url)){
@@ -73,8 +96,10 @@ module.exports = function injectorMain(bot, gs) {
       var buffer = await resolveUpload(url);
       var sha = crypto.createHash("sha256");
       sha.update(buffer);
+      var calculatedSha = sha.digest("hex");
+      // Check cache for the analysis
       // Check if VT already has the analysis
-      var inter = await vtRestCall(vttoken, `files/${sha.digest("hex")}/analyse`, "POST");
+      var inter = await vtRestCall(vttoken, `files/${calculatedSha}/analyse`, "POST");
       if(!inter["data"]){
         // That means the file does not exist and
         // we need to upload it.

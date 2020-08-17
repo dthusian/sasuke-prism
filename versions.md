@@ -1,5 +1,5 @@
 ## v2.0.0
-First commit: (null)
+First commit: ba9e5ee3dff795c0060b6198f25841c8ed537ce2 (master)
 
 - First version of sasuke prism v2
 - Reworked attack helicopters and file scanning

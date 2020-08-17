@@ -3,6 +3,7 @@
 // Imports and constants
 const INJECTOR_DIR = "./injectors/";
 const STATIC_DIR = "./static/";
+const VAR_DIR = "./var/";
 const LIB_SUBDIR = "lib/";
 const MODULE_SUBDIR = "module/";
 const CONFIG_SUBDIR = "config/";
@@ -17,6 +18,7 @@ var globalState = {
   bot: new discordjs.Client(),
   STATIC_DIR: STATIC_DIR,
   INJECTOR_DIR: INJECTOR_DIR,
+  VAR_DIR: VAR_DIR,
   LIB_SUBDIR: LIB_SUBDIR,
   MODULE_SUBDIR: MODULE_SUBDIR,
   CONFIG_SUBDIR: CONFIG_SUBDIR
