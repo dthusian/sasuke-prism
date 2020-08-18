@@ -4,5 +4,8 @@ node_modules/
 # Private tokens
 static/tokens.json
 
+# Virus Scan cache
+var/vtcache/
+
 # Unit file
 discordcd2.service

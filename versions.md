@@ -3,8 +3,10 @@ First commit: ba9e5ee3dff795c0060b6198f25841c8ed537ce2 (master)
 
 - First version of sasuke prism v2
 - Reworked attack helicopters and file scanning
-- Now open-source
+- Now open-source (wait that's not true)
 - Versions are now tracked
+  - New trigger, if pinged, will send bot information
+  - This bot info includes version
 - Internal changes (major restructuring)
   - Now being pushed to git
   - Now using ESLint to enforce code quality

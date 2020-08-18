@@ -1,0 +1,4 @@
+- Rework dice.js
+  - Rolls of the same-sided dice are combined into the same field
+  - Have an above/below average field
+- Have embed colors follow a centralised config

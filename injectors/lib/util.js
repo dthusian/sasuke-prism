@@ -17,11 +17,6 @@ module.exports = function injectorMain(gs){
     return user.name === "dthusian" && user.discriminator === 8480
   };
   gs.safeSend = function safeSend(msg, channel) {
-    try {
-      channel.send(msg);
-      return true;
-    } catch(e) {
-      return false;
-    }
+    channel.send(msg).catch(() => {});
   }
 };

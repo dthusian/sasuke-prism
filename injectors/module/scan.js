@@ -8,7 +8,6 @@ const fs = require("fs");
 const VTCACHE_SUBDIR = "vtcache/";
 const POLL_MS = 75 * 1000;
 var vttoken;
-var fileScanQueue = [];
 
 function resolveUpload(file){
   return fetch(file).then(v => v.buffer());
@@ -58,14 +57,14 @@ function VTRestError(msg, code){
 }
 
 function checkErrorOrThrow(response){
-  if(respose["error"]){
+  if(response["error"]){
     throw new VTRestError(response["error"]["message"], response["error"]["code"]);
   }
 }
 
-async function pollAnalysis(token, analysis, ms){
+async function pollAnalysis(token, analysis, ms, sha){
   var res;
-  while(true){
+  for(;;){
     res = await vtRestCall(token, `analyses/${analysis}`);
     checkErrorOrThrow(res);
     if(res["data"] && res["data"]["attributes"]){
@@ -73,14 +72,15 @@ async function pollAnalysis(token, analysis, ms){
     }
     await sleep(ms);
   }
+  res.sha = sha;
   return res;
 }
 
 async function findAnalysis(token, buf, name, cacheDir){
   // 0: Calculate SHA-256
   var shaHasher = crypto.createHash("sha256");
-  shaHasher.update(buffer);
-  var sha = sha.digest("hex");
+  shaHasher.update(buf);
+  var sha = shaHasher.digest("hex");
   // 1: Check local cache for analysis
   var localCachePath = cacheDir + sha + ".json";
   if(fs.existsSync(localCachePath)){
@@ -104,7 +104,7 @@ async function findAnalysis(token, buf, name, cacheDir){
       // 3: Upload and scan the file
       res = await vtRestCall(token, "files", "POST", multiPartFormFile(buf, name));
       checkErrorOrThrow(res);
-      return pollAnalysis(token, res["data"]["id"], POLL_MS);
+      return pollAnalysis(token, res["data"]["id"], POLL_MS, sha);
     } else {
       throw err;
     }
@@ -112,10 +112,10 @@ async function findAnalysis(token, buf, name, cacheDir){
   
   // The analysis was found and we just have to retrieve it now
   var aid = res["data"]["id"];
-  return pollAnalysis(token, aid, POLL_MS);
+  return pollAnalysis(token, aid, POLL_MS, sha);
 }
 
-function analysis2embed(analysis){
+function analysis2embed(analysis, col){
   var embed = new djs.MessageEmbed();
   embed.setTitle(`Scan Results for ${analysis["meta"]["file_info"]["name"]}`);
   var hasMalice = 0;
@@ -133,8 +133,8 @@ function analysis2embed(analysis){
     embed.setDescription(`${hasMalice} engines found in file.`);
   }
   embed.setFooter("Results from VirusTotal");
-  embed.setColor(scanEmbedCol);
-  msg.channel.send(embed);
+  embed.setColor(col);
+  return embed;
 }
 
 module.exports = function injectorMain(gs) {
@@ -153,8 +153,14 @@ module.exports = function injectorMain(gs) {
       }
       // Buffer contains the file
       var buffer = await resolveUpload(url);
+      gs.safeSend("Preparing scan...", msg.channel);
       var analysis = await findAnalysis(vttoken, buffer, attachment.name, gs.VAR_DIR + VTCACHE_SUBDIR);
-      gs.safeSend(msg.channel, analysis2embed(analysis));
+      gs.safeSend(analysis2embed(analysis, scanEmbedCol), msg.channel);
+      // Now save the analysis to cache
+      var cachePath = gs.VAR_DIR + VTCACHE_SUBDIR + analysis.sha + ".json";
+      if(!fs.existsSync(cachePath)){
+        fs.writeFile(cachePath, JSON.stringify(analysis), () => { });
+      }
     }
   });
 };

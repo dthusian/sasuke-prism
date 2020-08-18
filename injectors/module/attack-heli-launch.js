@@ -8,6 +8,11 @@ const ATTACK_HELI_NUM = 10;
 // Will be set to the discordApiCall function
 var discordRestCall;
 
+var droneSerialNum = 0;
+function droneFactory(){
+  return ++droneSerialNum;
+}
+
 var ongoingDroneStrikes = {};
 
 async function getWebhooks(cid) {
@@ -37,7 +42,7 @@ async function createWebhooks(cid, avatar) {
     var res = await discordRestCall("POST", "/channels/{major}/webhooks", {
       major: cid
     }, JSON.stringify({
-      name: "Attack Helicopter " + padLeft((i + 1).toString(), "0", 3),
+      name: "Attack Helicopter " + padLeft(droneFactory(), "0", 3),
       avatar: avatar
     }));
     // The max webhooks has probably been reached
@@ -79,7 +84,6 @@ async function droneStrike(msg, content, laststand, avatar, gs){
     clearInterval(int);
     ongoingDroneStrikes[msg.guild.id] = false;
     if(laststand){
-      msg.channel.send("Sasuke prism, may we meet again!");
       msg.guild.leave();
     }
   }, Math.random() * 100000 + 169420);
@@ -91,7 +95,7 @@ module.exports = function injectorMain(gs) {
   const droneStrikeActivate = "Go! Launch the attack helicopters against ";
   const droneStrikeLastStand = "<Go! Launch the attack helicopters against> ";
   async function getPerms(msg) {
-    return (await msg.channel.guild.members.fetch(bot.user))
+    return (await msg.channel.guild.members.fetch(gs.bot.user))
       .permissions.any(djs.Permissions.FLAGS.MANAGE_WEBHOOKS);
   }
   gs.bot.on("message", async msg => {
