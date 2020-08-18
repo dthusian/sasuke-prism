@@ -17,8 +17,8 @@ function sleep(ms){
   return new Promise(r => void setTimeout(r, ms));
 }
 
-module.exports = function injectorMain(bot, gs){
-  bot.on("message", async msg => {
+module.exports = function injectorMain(gs){
+  gs.bot.on("message", async msg => {
     if(!gs.normalMsg(msg)) return;
     if(/\bsa(su|us)ke\b/.test(msg.content)){
       if(channelsSinging[msg.channel.id]) return;

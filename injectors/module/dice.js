@@ -6,10 +6,10 @@ function randInt(max){
   return Math.floor(Math.random() * max);
 }
 
-module.exports = function injectorMain(bot, gs){
+module.exports = function injectorMain(gs){
   const diceEmbedColor = gs.colors.AQUA;
   const diceRegex = /\b[0-9]*d[0-9]+\b/ig;
-  bot.on("message", msg => {
+  gs.bot.on("message", msg => {
     if(!gs.normalMsg(msg)) return;
     if(msg.content.match(diceRegex)){
       var textdies = msg.content.match(diceRegex);

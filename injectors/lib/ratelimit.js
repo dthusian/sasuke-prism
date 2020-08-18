@@ -111,7 +111,8 @@ function RateLimiter(token) {
   }.bind(this);
 }
 
-module.exports = function injectorMain(gs){
+module.exports = async function injectorMain(gs){
+  await gs.require("util.js");
   gs.rateLimiter = new RateLimiter(gs.getToken("discordapi"));
   gs.discordApiCall = gs.rateLimiter.queueRequest;
 };

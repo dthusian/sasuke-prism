@@ -35,11 +35,11 @@ function mapYesNo(bool){
   return bool ? "yes" : "no";
 }
 
-module.exports = function injectorMain(bot, gs) {
+module.exports = function injectorMain(gs) {
   const ipEmbedColor = gs.colors.BLUE;
   const ipdatApiKey = gs.getToken("ipdata");
   const ipRegex = /(?:[0-9]{1,3}\.){3}[0-9]{1,3}/;
-  bot.on("message", async msg => {
+  gs.bot.on("message", async msg => {
     if(!gs.normalMsg(msg)) return;
     if (msg.content.match(ipRegex)){
       if(canSendReq()){

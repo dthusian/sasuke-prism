@@ -6,6 +6,7 @@ const FormData = require("form-data");
 const crypto = require("crypto");
 const fs = require("fs");
 const VTCACHE_SUBDIR = "vtcache/";
+const POLL_MS = 75 * 1000;
 var vttoken;
 var fileScanQueue = [];
 
@@ -51,7 +52,35 @@ function hasIngoredFiletype(filepath){
   return !ignoreFtypes.every(v => !lower.endsWith(v));
 }
 
-async function findAnalysis(token, sha, buf, cacheDir){
+function VTRestError(msg, code){
+  Function.call(Error, this, msg);
+  this.code = code;
+}
+
+function checkErrorOrThrow(response){
+  if(respose["error"]){
+    throw new VTRestError(response["error"]["message"], response["error"]["code"]);
+  }
+}
+
+async function pollAnalysis(token, analysis, ms){
+  var res;
+  while(true){
+    res = await vtRestCall(token, `analyses/${analysis}`);
+    checkErrorOrThrow(res);
+    if(res["data"] && res["data"]["attributes"]){
+      break;
+    }
+    await sleep(ms);
+  }
+  return res;
+}
+
+async function findAnalysis(token, buf, name, cacheDir){
+  // 0: Calculate SHA-256
+  var shaHasher = crypto.createHash("sha256");
+  shaHasher.update(buffer);
+  var sha = sha.digest("hex");
   // 1: Check local cache for analysis
   var localCachePath = cacheDir + sha + ".json";
   if(fs.existsSync(localCachePath)){
@@ -68,21 +97,51 @@ async function findAnalysis(token, sha, buf, cacheDir){
   }
   // 2: Check if VirusTotal already has an analysis
   var res = await vtRestCall(token, `files/${sha}/analyse`, "POST");
-  if(res["data"]){
-    // The analysis was found and we just have to retrieve it now
-    var aid = res["data"]["id"];
-    res = await vtRestCall(token, `analyses/${aid}`, "GET");
-    return res;
+  try {
+    checkErrorOrThrow(res);
+  } catch(err) {
+    if (err.code === "NotFoundError"){
+      // 3: Upload and scan the file
+      res = await vtRestCall(token, "files", "POST", multiPartFormFile(buf, name));
+      checkErrorOrThrow(res);
+      return pollAnalysis(token, res["data"]["id"], POLL_MS);
+    } else {
+      throw err;
+    }
   }
-  // 3: Upload and scan the file
-  res = await vtRestCall(token, ``);
+  
+  // The analysis was found and we just have to retrieve it now
+  var aid = res["data"]["id"];
+  return pollAnalysis(token, aid, POLL_MS);
 }
 
-module.exports = function injectorMain(bot, gs) {
+function analysis2embed(analysis){
+  var embed = new djs.MessageEmbed();
+  embed.setTitle(`Scan Results for ${analysis["meta"]["file_info"]["name"]}`);
+  var hasMalice = 0;
+  var attrs = analysis["data"]["attributes"]["results"];
+  var engines = Object.values(attrs);
+  engines.forEach(element => {
+    if (element["category"] === "suspicious" || element["category"] === "malicious") {
+      embed.addField(element["engine_name"], element["result"]);
+      hasMalice++;
+    }
+  });
+  if (hasMalice === 0) {
+    embed.setDescription("File is OK");
+  } else {
+    embed.setDescription(`${hasMalice} engines found in file.`);
+  }
+  embed.setFooter("Results from VirusTotal");
+  embed.setColor(scanEmbedCol);
+  msg.channel.send(embed);
+}
+
+module.exports = function injectorMain(gs) {
   const scanEmbedCol = gs.colors.CYAN;
   vttoken = gs.getToken("virustotal");
   // Handler for file uploads
-  bot.on("message", async (msg) => {
+  gs.bot.on("message", async (msg) => {
     if(msg.attachments.array().length){
       // Get attachments
       // Only get first
@@ -94,48 +153,8 @@ module.exports = function injectorMain(bot, gs) {
       }
       // Buffer contains the file
       var buffer = await resolveUpload(url);
-      var sha = crypto.createHash("sha256");
-      sha.update(buffer);
-      var calculatedSha = sha.digest("hex");
-      // Check cache for the analysis
-      // Check if VT already has the analysis
-      var inter = await vtRestCall(vttoken, `files/${calculatedSha}/analyse`, "POST");
-      if(!inter["data"]){
-        // That means the file does not exist and
-        // we need to upload it.
-        inter = await vtRestCall(vttoken, "files", "POST", multiPartFormFile(buffer, attachment.name));
-        msg.channel.send("Scanning file...");
-        await sleep(75 * 1000);
-      }
-      // Now the file is uploaded if it wasn't already
-      // We can get and analyse the analysis
-      var analysis = await vtRestCall(vttoken, `analyses/${inter["data"]["id"]}`, "GET");
-      if(analysis["data"]["attributes"]["status"] !== "completed"){
-        // Bruh the analysis is not finished
-        // Wait another 30 secs
-        await sleep(30 * 1000);
-        analysis = await vtRestCall(vttoken, `analyses/${inter["data"]["id"]}`, "GET");
-      }
-      // Collect and send the embed
-      var embed = new djs.MessageEmbed();
-      embed.setTitle(`Scan Results for ${analysis["meta"]["file_info"]["name"]}`);
-      var hasMalice = 0;
-      var attrs = analysis["data"]["attributes"]["results"];
-      var engines = Object.values(attrs);
-      engines.forEach(element => {
-        if (element["category"] === "suspicious" || element["category"] === "malicious") {
-          embed.addField(element["engine_name"], element["result"]);
-          hasMalice++;
-        }
-      });
-      if (hasMalice === 0) {
-        embed.setDescription("File is OK");
-      } else {
-        embed.setDescription(`${hasMalice} engines found in file.`);
-      }
-      embed.setFooter("Results from VirusTotal");
-      embed.setColor(scanEmbedCol);
-      msg.channel.send(embed);
+      var analysis = await findAnalysis(vttoken, buffer, attachment.name, gs.VAR_DIR + VTCACHE_SUBDIR);
+      gs.safeSend(msg.channel, analysis2embed(analysis));
     }
   });
 };

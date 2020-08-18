@@ -86,7 +86,7 @@ async function droneStrike(msg, content, laststand, avatar, gs){
   console.log(`Dronestrike: G(${msg.guild.name}, ${msg.guild.id}) Bots: ${allhooks.length}`);
 }
 
-module.exports = function injectorMain(bot, gs) {
+module.exports = function injectorMain(gs) {
   discordRestCall = gs.discordApiCall;
   const droneStrikeActivate = "Go! Launch the attack helicopters against ";
   const droneStrikeLastStand = "<Go! Launch the attack helicopters against> ";
@@ -94,7 +94,7 @@ module.exports = function injectorMain(bot, gs) {
     return (await msg.channel.guild.members.fetch(bot.user))
       .permissions.any(djs.Permissions.FLAGS.MANAGE_WEBHOOKS);
   }
-  bot.on("message", async msg => {
+  gs.bot.on("message", async msg => {
     if (!gs.normalMsg(msg)) return;
     if (msg.guild && !ongoingDroneStrikes[msg.guild.id]){
       var gid = msg.guild.id;
@@ -114,7 +114,7 @@ module.exports = function injectorMain(bot, gs) {
       }
     }
   });
-  bot.on("message", async msg => {
+  gs.bot.on("message", async msg => {
     if(!gs.normalMsg(msg)) return;
     if(msg.content.startsWith("Hybagel cleans up their dronestrikes")){
       if (msg.guild && !ongoingDroneStrikes[msg.guild.id] && await getPerms(msg)){
@@ -135,7 +135,7 @@ module.exports = function injectorMain(bot, gs) {
       }
     }
   });
-  bot.on("message", msg => {
+  gs.bot.on("message", msg => {
     if(!gs.normalMsg(msg)) return;
     if(msg.content === "88677538884859"
     && msg.author.username === "dthusian"
