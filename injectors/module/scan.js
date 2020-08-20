@@ -138,7 +138,7 @@ function analysis2embed(analysis, col){
 }
 
 module.exports = function injectorMain(gs) {
-  const scanEmbedCol = gs.colors.CYAN;
+  const scanEmbedCol = gs.getEmbedColor("scan.js");
   vttoken = gs.getToken("virustotal");
   // Handler for file uploads
   gs.bot.on("message", async (msg) => {

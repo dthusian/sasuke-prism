@@ -36,7 +36,7 @@ function mapYesNo(bool){
 }
 
 module.exports = function injectorMain(gs) {
-  const ipEmbedColor = gs.colors.BLUE;
+  const ipEmbedColor = gs.getEmbedColor("ip.js");
   const ipdatApiKey = gs.getToken("ipdata");
   const ipRegex = /(?:[0-9]{1,3}\.){3}[0-9]{1,3}/;
   gs.bot.on("message", async msg => {

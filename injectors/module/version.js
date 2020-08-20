@@ -8,7 +8,7 @@ embed.setTitle("sasuke prism");
 embed.setDescription("v2.0.0");
 
 module.exports = function injectorMain(gs){
-  embed.setColor(gs.colors.ORANGE);
+  embed.setColor(gs.getEmbedColor("version.js"));
   gs.bot.on("message", msg => {
     if(!gs.normalMsg(msg)) return;
     if(msg.mentions.has(gs.bot.user, {

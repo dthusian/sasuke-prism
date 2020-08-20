@@ -3,7 +3,7 @@
 module.exports = function injectorMain(gs){
   gs.colors = {
     RED: [224, 0, 0],
-    ORANGE: [255, 127, 0],
+    ORANGE: [255, 192, 0],
     YELLOW: [255, 255, 0],
     LIME: [127, 255, 0],
     GREEN: [0, 224, 0],

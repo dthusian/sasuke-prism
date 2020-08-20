@@ -1,4 +1,23 @@
-- Rework dice.js
-  - Rolls of the same-sided dice are combined into the same field
-  - Have an above/below average field
-- Have embed colors follow a centralised config
+# This is the TODO File. Things here might appear in future versions of the bot.
+
+- Add a level-up system
+  - Messages make you level up
+  - 1 Msg = 10 XP, every 5 minutes
+  - Every level = 500 XP
+  - Add other ways to get XP
+  - Ranks
+    - Point: Lv 1 - 5
+    - Segment: Lv 6 - 10
+    - Ray: Lv 11 - 15
+    - Line: Lv 16 - 20
+    - Triangle: Lv 21 - 30
+    - Square: Lv 31 - 40
+    - Hexagon: Lv 41 - 50
+    - Tetrahedron: Lv 51 - 65
+    - Prism: Lv 66 - 80
+    - Octahedron: Lv 81 - 95
+    - Dodecahedron: Lv 96 - 110
+    - Icosahedron: Lv 111 - 125
+    - Hyperprism: Lv 126+
+- Add a credits system
+  - Linked to XP system

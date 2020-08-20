@@ -7,35 +7,37 @@ function randInt(max){
 }
 
 module.exports = function injectorMain(gs){
-  const diceEmbedColor = gs.colors.AQUA;
+  const diceEmbedColor = gs.getEmbedColor("dice.js");
   const diceRegex = /\b[0-9]*d[0-9]+\b/ig;
   gs.bot.on("message", msg => {
     if(!gs.normalMsg(msg)) return;
     if(msg.content.match(diceRegex)){
       var textdies = msg.content.match(diceRegex);
-      var realdies = [];
-      var gay = false;
+      var bad = false;
+      var sum = 0;
+      var diceCount = 0;
+      var embed = new djs.MessageEmbed();
       Array.from(textdies).forEach(v => {
         var splits = v.split(/d/ig).map(v => (!v) ? 1 : parseInt(v));
-        if(gay) {
+        if(bad) {
           return;
         }
-        if(realdies.length + splits[0] > 50){
-          gay = true;
+        if(embed.fields.length > 20){
+          bad = true;
           return;
         }
-        realdies = realdies.concat((new Array(splits[0])).fill(splits[1]));
-      });
-      if(gay) return;
-      var embed = new djs.MessageEmbed();
-      var sum = 0;
-      realdies.forEach(v => {
-        var res = randInt(v) + 1;
-        sum += res;
-        embed.addField("d" + v, res);
+        var rolls = [];
+        var localSum = 0;
+        for(var i = 0; i < splits[0]; i++){
+          diceCount++;
+          rolls.push(randInt(splits[1]) + 1);
+          localSum += rolls[i];
+        }
+        sum += localSum;
+        embed.addField(`${splits[0]}d${splits[1]} (Sum ${localSum})`, rolls.join(", "));
       });
       embed.setDescription("Sum: " + sum);
-      embed.setTitle(`Results of ${realdies.length} dice`);
+      embed.setTitle(`Results of ${diceCount} dice`);
       embed.setColor(diceEmbedColor);
       gs.safeSend(embed, msg.channel);
     }
