@@ -19,13 +19,12 @@ module.exports = function injectorMain(gs){
     return msg && msg.content && msg.author && !msg.author.bot;
   };
   gs.isSuperUser = function isSuperUser(user) {
-    return user.name === "dthusian" && user.discriminator === 8480
+    return user.username === "dthusian" && user.discriminator === "8480";
   };
   gs.safeSend = function safeSend(msg, channel) {
     channel.send(msg).catch(() => {});
   };
   gs.getEmbedColor = function getEmbedColor(modName) {
-    gs.requires("color.js");
     var cfgVal = gs.getConfig("embedColors.json");
     return gs.colors[cfgVal[modName]];
   };

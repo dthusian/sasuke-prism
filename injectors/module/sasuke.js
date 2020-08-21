@@ -24,7 +24,7 @@ module.exports = function injectorMain(gs){
       if(channelsSinging[msg.channel.id]) return;
       channelsSinging[msg.channel.id] = true;
       for(var i = 0; i < nonosong.length; i++){
-        gs.safeSend(nonosong[i]);
+        gs.safeSend(nonosong[i], msg.channel);
         await sleep(1500);
       }
       channelsSinging[msg.channel.id] = false;

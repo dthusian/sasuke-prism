@@ -1,43 +1,31 @@
 "use strict";
 
 // Imports and constants
-const INJECTOR_DIR = "./injectors/";
-const STATIC_DIR = "./static/";
-const VAR_DIR = "./var/";
-const LIB_SUBDIR = "lib/";
-const MODULE_SUBDIR = "module/";
-const CONFIG_SUBDIR = "config/";
-const MAX_LISTENERS = 69;
 const AsyncFunction = Object.getPrototypeOf(async function() {}).constructor;
 
 const discordjs = require("discord.js");
 const fs = require("fs");
 const reqLib = new (require("./requires.js"))();
+const consts = require("./const.js");
 
 // Global state object
 var globalState = {
   bot: new discordjs.Client(),
   require: reqLib.require,
-
-  // Constants
-  STATIC_DIR: STATIC_DIR,
-  INJECTOR_DIR: INJECTOR_DIR,
-  VAR_DIR: VAR_DIR,
-  LIB_SUBDIR: LIB_SUBDIR,
-  MODULE_SUBDIR: MODULE_SUBDIR,
-  CONFIG_SUBDIR: CONFIG_SUBDIR
+  debug: false
 };
+
+consts(globalState);
 
 // Baseplate code
 globalState.bot.on("ready", () => {
   console.log("Bot Ready");
 });
-globalState.bot.setMaxListeners(MAX_LISTENERS);
 
 function executeInjectors(subdir){
   return new Promise((resolve, reject) => {
     // Execute injectors
-    fs.readdir(INJECTOR_DIR + subdir, (err, files) => {
+    fs.readdir(globalState.INJECTOR_DIR + subdir, (err, files) => {
       if (err) {
         console.error(`fatal: Error while scanning injector dir ${INJECTOR_DIR}`);
         reject(err);
@@ -50,7 +38,7 @@ function executeInjectors(subdir){
         var injector;
         // Load the injector
         try {
-          injector = require(INJECTOR_DIR + subdir + injName);
+          injector = require(globalState.INJECTOR_DIR + subdir + injName);
         } catch(error) {
           console.error(`fatal: Error with injector source ${injName}`);
           reject(error);
@@ -86,8 +74,8 @@ function executeInjectors(subdir){
 }
 
 async function main(){
-  await executeInjectors(LIB_SUBDIR);
-  await executeInjectors(MODULE_SUBDIR);
+  await executeInjectors(globalState.LIB_SUBDIR);
+  await executeInjectors(globalState.MODULE_SUBDIR);
   // Drop all promises, they are waiting on non-existent modules
   reqLib.drop();
   globalState.bot.login(globalState.getToken("discordapi"));
