@@ -8,8 +8,9 @@
       "skipFiles": [
         "<node_internals>/**"
       ],
-      "program": "${workspaceFolder}/index.js",
-      "runtimeArgs": ["--unhandled-rejections=strict"]
+      "program": "${workspaceFolder}/src/index.js",
+      "runtimeArgs": ["--unhandled-rejections=strict"],
+      "cwd": "${workspaceFolder}/src"
     }
   ]
 }

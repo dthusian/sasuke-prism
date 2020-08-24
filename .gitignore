@@ -2,10 +2,10 @@
 node_modules/
 
 # Private tokens
-static/tokens.json
+src/static/tokens.json
 
 # Virus Scan cache
-var/vtcache/
+src/var/vtcache/
 
 # Unit file
 discordcd2.service

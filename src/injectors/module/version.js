@@ -2,12 +2,11 @@
 
 const djs = require("discord.js");
 
-var embed = new djs.MessageEmbed();
-
-embed.setTitle("sasuke prism");
-embed.setDescription("v2.0.0");
-
 module.exports = function injectorMain(gs){
+  var embed = new djs.MessageEmbed();
+  embed.setTitle("sasuke prism");
+  embed.setDescription(`${gs.getToken("version")} | GitHub: http://github.com/EatTofuEveryDay/sasuke-prism`);
+  embed.setFooter("Made by dthusian#8480 | zlib licensed");
   embed.setColor(gs.getEmbedColor("version.js"));
   gs.bot.on("message", msg => {
     if(!gs.normalMsg(msg)) return;

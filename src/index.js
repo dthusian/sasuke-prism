@@ -27,7 +27,7 @@ function executeInjectors(subdir){
     // Execute injectors
     fs.readdir(globalState.INJECTOR_DIR + subdir, (err, files) => {
       if (err) {
-        console.error(`fatal: Error while scanning injector dir ${INJECTOR_DIR}`);
+        console.error(`fatal: Error while scanning injector dir ${globalState.INJECTOR_DIR}`);
         reject(err);
         return;
       }

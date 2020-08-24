@@ -1,6 +1,7 @@
+"use strict";
+
 const djs = require("discord.js");
 const http = require("http");
-const fs = require("fs");
 const crypto = require("crypto");
 
 const NONCE_TIMEOUT = 1000 * 60 * 5;
@@ -31,13 +32,17 @@ http.createServer((req, res) => {
 }).listen(NONCE_SERVER_PORT);
 
 var commands = {
-  "restart": function(gs, args) {
+  "restart": function() {
     setTimeout(process.exit, 5000, 69);
     return "Restarting in 5 sec";
   },
-  "debug": function(gs, args) {
+  "debug": function (gs) {
     gs.debug = true;
     return "Debug mode enabled";
+  },
+  "leave": function (gs, msg) {
+    msg.guild.leave();
+    return "";
   }
 };
 
@@ -82,7 +87,7 @@ module.exports = function injectorMain(gs){
 
       // Execute command
       try {
-        success = commandfunc(gs, splits.slice(3));
+        success = commandfunc(gs, msg, splits.slice(3));
       } catch(e) {
         gs.safeSend(makeErrorEmbed(e, failCol), msg.channel);
       }

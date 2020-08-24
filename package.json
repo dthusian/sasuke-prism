@@ -13,9 +13,7 @@
     "eslint": "^7.7.0"
   },
   "scripts": {
-    "start": "./launch",
-    "stop": "./quit",
-    "test": "./node_modules/.bin/eslint ./injectors/**/*.js"
+    "test": "./node_modules/.bin/eslint ./src/injectors/**/*.js"
   },
   "author": "",
   "license": "MIT"

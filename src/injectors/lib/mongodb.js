@@ -1,3 +1,7 @@
+"use strict";
+
+/* eslint-disable -- WIP file, not presentable yet */
+
 const mongo = require("mongodb");
 const connectionURI = "mongodb://sasuke_prism@localhost:27017/";
 

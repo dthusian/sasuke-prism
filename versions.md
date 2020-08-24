@@ -1,4 +1,4 @@
-## v2.1.0
+## v2.0.1
 
 First commit: 6d84ef4f2f39ab0695a120ce4c43aa50682ab1ef (master)
 
@@ -7,6 +7,9 @@ First commit: 6d84ef4f2f39ab0695a120ce4c43aa50682ab1ef (master)
 - New static directory: assets. For those static image assets
   - Attack helicopter avatar is no longer stored in tokens.json and now in attack-heli.txt
 - New trigger, sudo. Used by the super-user to perform root actions.
+- Put useful information in README
+- Restructure code
+  - Now we have a src/
 
 ## v2.0.0
 First commit: ba9e5ee3dff795c0060b6198f25841c8ed537ce2 (master)
