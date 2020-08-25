@@ -1,7 +1,7 @@
 ## v2.0.1
 
 First commit: 6d84ef4f2f39ab0695a120ce4c43aa50682ab1ef (master)
-Last commit: (master)
+Last commit: ce94bc4a5574915b99560672e90c057acf1c171c (master)
 
 - Reworked dice.js
 - Now actually open-source

@@ -20,8 +20,18 @@
     - Icosahedron: Lv 111 - 125
     - Hyperprism: Lv 126+
 - Add a mana system
+  - 3 types of mana
+    - Primal mana
+      - Regenerates over time
+      - Obtained with messages
+    - Crystal mana
+      - Obtained with messages
+    - Power mana
+      - Obtained with lv up
+  - Typing minigame will grant all 3 types of mana
   - Users can cast spells that do funny Things
   - Spells may include
     - Drone strikes
     - Kicking members
     - Playing music
+    - Decrease the audio quality of a channel

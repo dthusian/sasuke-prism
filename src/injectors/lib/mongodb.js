@@ -18,6 +18,9 @@ module.exports = async function injectorMain(gs){
       password: mongoToken
     }
   });
+
+  client.connect();
+
   gs.getGuildConfig = function getGuildConfig(gid) {
     if(!guildCache[gid]){
       
