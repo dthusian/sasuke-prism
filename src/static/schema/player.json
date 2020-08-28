@@ -1,0 +1,48 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "https://raw.githubusercontent.com/EatTofuEveryDay/sasuke-prism/master/src/static/schema/player.json",
+  "title": "Player Database Data",
+  "description": "sasuke prism's player data storage. Will be put into MongoDB",
+  "type": "object",
+  "properties": {
+    "_id": {
+      "type": "string",
+      "description": "MongoDB primary key. Is equal to the Discord user's snowflake."
+    },
+    "mana": {
+      "type": "object",
+      "properties": {
+        "primal": {
+          "type": "number"
+        },
+        "crystal": {
+          "type": "number"
+        },
+        "power": {
+          "type": "number"
+        },
+        "void": {
+          "type": "number"
+        }
+      }
+    },
+    "stats": {
+      "type": "object",
+      "properties": {
+        "glitch": {
+          "type": "number"
+        },
+        "level": {
+          "type": "number"
+        },
+        "xp": {
+          "type": "number"
+        }
+      }
+    },
+    "lastPlayedTypingGame": {
+      "type": "number",
+      "description": "The ISO 8601 UTC time when this player last played the typing minigame"
+    }
+  }
+}

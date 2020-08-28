@@ -28,10 +28,23 @@
       - Obtained with messages
     - Power mana
       - Obtained with lv up
+    - Void mana
+      - Obtained only with void spells
   - Typing minigame will grant all 3 types of mana
   - Users can cast spells that do funny Things
   - Spells may include
+    - Blind: User cannot read message channels
+    - Drain: Remove someone else's mana
+    - Distraction: The bot (and any other sasuke-helper instances) begins typing
+    - Void: Turn server into anarchy server, begin production of void mana
+
     - Drone strikes
-    - Kicking members
-    - Playing music
-    - Decrease the audio quality of a channel
+    - Mana stream: Provides an infinite amount of Primal mana for a duration
+    - Freeze: Commit full mute on a members
+    
+    - Restore: Removes debuffs (blind, freeze) on a user
+    - Music: Playing music
+    - Poison: Decrease the audio quality of a channel
+
+    - Cleaning webhooks
+    - Corrupt: Ban people for void mana, only works if server is voided

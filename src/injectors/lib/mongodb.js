@@ -6,7 +6,6 @@ const mongo = require("mongodb");
 const connectionURI = "mongodb://sasuke_prism@localhost:27017/";
 
 var guildCache = {};
-var channelCache = {};
 var userCache = {};
 
 module.exports = async function injectorMain(gs){
@@ -26,6 +25,5 @@ module.exports = async function injectorMain(gs){
       
     }
   };
-  gs.getChannelConfig = function getChannelConfig(cid) { };
   gs.getPlayerData = function getPlayerData(uid) { };
 };
