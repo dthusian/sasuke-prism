@@ -9,6 +9,10 @@
       "type": "string",
       "description": "MongoDB primary key. Is equal to the Discord user's snowflake."
     },
+    "version": {
+      "type": "number",
+      "description": "Data format version of this JSON"
+    },
     "mana": {
       "type": "object",
       "properties": {
@@ -29,9 +33,6 @@
     "stats": {
       "type": "object",
       "properties": {
-        "glitch": {
-          "type": "number"
-        },
         "level": {
           "type": "number"
         },

@@ -28,4 +28,16 @@ module.exports = function injectorMain(gs){
     var cfgVal = gs.getConfig("embedColors.json");
     return gs.colors[cfgVal[modName]];
   };
+  gs.cbToPromise = function cbToPromise(func, that, ...args) {
+    return new Promise((resolve, reject) => {
+      try {
+        func.apply(that, args.concat((err, res) => {
+          if(err) throw err;
+          else resolve(res);
+        }));
+      } catch(err) {
+        reject(err);
+      }
+    });
+  }
 };
