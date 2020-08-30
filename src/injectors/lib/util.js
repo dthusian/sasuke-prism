@@ -39,5 +39,20 @@ module.exports = function injectorMain(gs){
         reject(err);
       }
     });
-  }
+  };
+  gs.getJSONPath = function getJSONPath(obj, path) {
+    var currentScope = obj;
+    for(var i = 0; i < path.length; i++){
+      currentScope = currentScope[path[i]];
+    }
+    return currentScope;
+  };
+  gs.setJSONPath = function setJSONPath(obj, path, val) {
+    var currentScope = obj;
+    for(var i = 0; i < path.length - 1; i++){
+      if (!currentScope[path[i]]) currentScope[path[i]] = {};
+      currentScope = currentScope[path[i]];
+    }
+    currentScope[path[i]] = val;
+  };
 };

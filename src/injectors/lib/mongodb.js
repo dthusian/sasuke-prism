@@ -5,9 +5,6 @@
 const mongo = require("mongodb");
 const CONNECTION_URI = "mongodb://sasuke_prism@localhost:27017/";
 
-var guildCache = {};
-var userCache = {};
-
 // Normalizes a player's JSON
 // Upgrades from lower data versions
 function upgradePlayerJSON(obj, id){
@@ -21,6 +18,7 @@ function upgradePlayerJSON(obj, id){
   if(!obj.stats) obj.stats = {};
   if(!obj.stats.level) obj.stats.level = 1;
   if(!obj.stats.xp) obj.stats.xp = 0;
+  return obj;
 }
 
 module.exports = async function injectorMain(gs){
@@ -35,27 +33,60 @@ module.exports = async function injectorMain(gs){
     }
   });
   client.connect();
-  var db = client.db("sasuke_prism");
-  var guilds = await db.collection("guilds");
-  var players = await db.collection("players");
+  var dbo = client.db("sasuke_prism");
+  // DB: guilds, players,
 
-  gs.getGuildConfig = async function getGuildConfig(gid) {
-    if(!guildCache[gid]){
-      var guild = await guilds.findOne({ "_id": gid });
-      guildCache[gid] = guild;
-      return guild;
-    }
-    return guildCache[gid];
+  var collecs = {
+    guilds: await dbo.collection("guilds"),
+    players: await dbo.collection("players")
   };
-  gs.getPlayerData = async function getPlayerData(uid) {
-    if (!userCache[uid]) {
-      var player = await guilds.findOne({ "_id": uid });
-      userCache[uid] = player;
-      return upgradePlayerJSON(player);
-    }
-    return upgradePlayerJSON(userCache[uid]);
+  var caches = {
+    guilds: {},
+    players: {}
   };
-  gs.setPlayerData = async function setPlayerData(uid, field, val) {
-    
+  var mutexs = {
+    guilds: new gs.Mutex(),
+    players: new gs.Mutex()
+  };
+  var sanitizers = {
+    players: upgradePlayerJSON
+  };
+
+  gs.getFromDB = async function getFromDB(db, uuid) {
+    if(!caches[db]){
+      throw new Error(`Database ${db} does not exist`);
+    }
+    if(!caches[db][uuid]){
+      var obj = await collecs[db].findOne({ "_id": uuid });
+      if(sanitizers[db]){
+        obj = sanitizers[db](obj, uuid);
+      }
+      caches[db][uuid] = obj;
+      return obj;
+    }
+    return caches[db][uuid];
+  };
+  // Path is in format ["foo", "bar"] == obj.foo.bar
+  gs.setToDB = async function setTodb(db, uuid, path, val) {
+    if(!caches[db]){
+      throw new Error(`Database ${db} does not exist`);
+    }
+    await mutexs[db].acquire();
+    gs.setJSONPath(caches[db][uuid], path, val);
+    var updDoc = { "$set": { } };
+    gs.setJSONPath(updDoc["$set"], path, val);
+    await collecs[db].updateOne({ "_id": uuid }, updDoc);
+    mutexs[db].release();
+  };
+  gs.clearCache = async function clearCache(db = "") {
+    var dbs;
+    if(db === ""){
+      dbs = Object.keys(caches);
+    }else{
+      dbs = [db];
+    }
+    for(var i = 0; i < dbs.length; i++){
+      caches[dbs[i]] = {};
+    }
   };
 };
