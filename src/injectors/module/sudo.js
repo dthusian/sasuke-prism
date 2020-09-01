@@ -5,11 +5,11 @@ const http = require("http");
 const crypto = require("crypto");
 
 const NONCE_TIMEOUT = 1000 * 60 * 5;
-const NONCE_SERVER_PORT = 5123;
+const NONCE_SERVER_PORT = 6123;
 
 var issuedNonces = [];
 
-http.createServer((req, res) => {
+var srv = http.createServer((req, res) => {
   if(req.url !== "/"){
     res.writeHead(404, { "Content-Type": "text/plain" });
     res.write("404: Not found");
@@ -30,6 +30,10 @@ http.createServer((req, res) => {
   res.write(nonce);
   res.end();
 }).listen(NONCE_SERVER_PORT);
+
+process.on("exit", () => {
+  srv.close();
+});
 
 var commands = {
   "restart": function() {

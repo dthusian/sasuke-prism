@@ -12,8 +12,8 @@ function Mutex(){
     });
   }.bind(this);
   this.release = function(){
-    if(resolverQueue.length){
-      var resolve = resolverQueue.shift();
+    if(this.resolverQueue.length){
+      var resolve = this.resolverQueue.shift();
       resolve();
     }else{
       this.acquired = false;

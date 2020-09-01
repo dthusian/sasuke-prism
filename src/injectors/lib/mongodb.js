@@ -1,9 +1,9 @@
 "use strict";
 
-/* eslint-disable -- WIP file, not presentable yet */
-
 const mongo = require("mongodb");
-const CONNECTION_URI = "mongodb://sasuke_prism@localhost:27017/";
+const DB_NAME = "sasuke_prism";
+const USER_NAME = "sasuke_prism";
+const AUTH_TYPE = "SCRAM-SHA-256";
 
 // Normalizes a player's JSON
 // Upgrades from lower data versions
@@ -25,7 +25,7 @@ function defaultGuildJSON(obj, id){
   if(!obj) obj = {};
   if(!obj._id) obj._id = id;
   if(!obj.config) obj.config = {};
-  if(!obj.config.prefix) obj.prefix = "prism ";
+  if(!obj.config.prefix) obj.config.prefix = "prism ";
   if(!obj.channels) obj.channels = {};
   return obj;
 }
@@ -35,14 +35,14 @@ module.exports = async function injectorMain(gs){
 
   // Connect to MongoDB
   var mongoToken = gs.getToken("mongodb");
+  const CONNECTION_URI = `mongodb://${encodeURIComponent(USER_NAME)}:${encodeURIComponent(mongoToken)}@127.0.0.1:27017/?authMechanism=${AUTH_TYPE}`;
   const client = new mongo.MongoClient(CONNECTION_URI, {
-    auth: {
-      user: "sasuke_prism",
-      password: mongoToken
-    }
+    authSource: "sasuke_prism",
+    useUnifiedTopology: true
   });
-  client.connect();
-  var dbo = client.db("sasuke_prism");
+  await client.connect();
+  var dbo = client.db(DB_NAME);
+
   // DB: guilds, players,
 
   var collecs = {
@@ -69,11 +69,16 @@ module.exports = async function injectorMain(gs){
     if(!caches[db][uuid]){
       var obj = await collecs[db].findOne({ "_id": uuid });
       // Object is not in DB, doesnt exist
+      var createNew = false;
       if(!obj){
+        createNew = true;
         obj = {};
       }
       if(sanitizers[db]){
         obj = sanitizers[db](obj, uuid);
+      }
+      if(createNew){
+        await collecs[db].insertOne(obj);
       }
       caches[db][uuid] = obj;
       return obj;
@@ -106,7 +111,8 @@ module.exports = async function injectorMain(gs){
   gs.prefix = async function hasPrefix(msg) {
     if(!msg.content) return false;
     if(msg.guild.available) {
-      var prefix = gs.getFromDB("guilds", msg.guild.id);
+      var guildDb = await gs.getFromDB("guilds", msg.guild.id);
+      var prefix = guildDb.config.prefix;
       if(msg.content.startsWith(prefix)){
         return msg.content.substring(prefix.length);
       } else {

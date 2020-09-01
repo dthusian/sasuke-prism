@@ -15,7 +15,8 @@ function RequireManager(){
     });
   }.bind(this);
   this.satisfy = function (module) {
-    if (this.promises[module]) {
+    if (this.promises[module] === true) return;
+    if (this.promises[module] instanceof Array) {
       this.promises[module].forEach(v => v.resolve());
     }
     this.promises[module] = true;

@@ -12,24 +12,29 @@ function SpellCardHandler(){
       cost: manaCost
     }
   }.bind(this);
+  this.gets = function gets(name) {
+    return this.spellCards[name];
+  }
   this.execute = function execute(name, msg){
-    if(!this.spellCards[name]) return "";
-    return this.spellCards[name].onCast(msg);
+    if(!this.gets(name)) return "";
+    return this.gets(name).onCast.forEach(v => v(msg));
   }
 }
 
-module.exports = function injectorMain(gs) {
+module.exports = async function injectorMain(gs) {
+  var failCol = gs.getEmbedColor("meta-fail");
   gs.spellCardHandler = new SpellCardHandler();
   gs.spellCardHandler.add("test", msg => {
     console.log("SpellCard!");
   }, {
-    primal: 69
-  })
+    primal: 5
+  });
 
   function makeNotEnoughManaEmbed(name) {
     var neManaEmbed = new djs.MessageEmbed();
     neManaEmbed.setTitle("Not Enough Mana");
-    neManaEmbed.setDescription(`Not Enough Mana to Cast \`[[${name}]]\``);
+    neManaEmbed.setDescription(`Not enough mana to cast \`[[${name}]]\``);
+    neManaEmbed.setColor(failCol);
     return neManaEmbed;
   }
 
@@ -37,18 +42,20 @@ module.exports = function injectorMain(gs) {
     var sfEmbed = new djs.MessageEmbed();
     sfEmbed.setTitle("Spell Failed");
     sfEmbed.setDescription(res);
+    sfEmbed.setColor(failCol);
+    return sfEmbed;
   }
 
-  gs.bot.on("message", msg => {
+  gs.bot.on("message", async msg => {
     if(!gs.normalMsg(msg)) return;
-    var cmd = gs.prefix(msg);
+    var cmd = await gs.prefix(msg);
     if(!cmd) return;
     var splits = cmd.split(" ").filter(v => v);
     if(splits[0] === "cast"){
       // Get player data and spellcard object
-      var player = gs.getFromDB("players", msg.author.id);
+      var player = await gs.getFromDB("players", msg.author.id);
       var spellCardName = splits[1];
-      var spellCard = gs.spellCardHandler[spellCardName];
+      var spellCard = gs.spellCardHandler.gets(spellCardName);
       if(!spellCard) return;
 
       // Calculate mana and check if player has enough
@@ -61,15 +68,15 @@ module.exports = function injectorMain(gs) {
       kvs = Object.entries(newMana);
       var notEnough = false;
       for(var i = 0; i < kvs.length; i++){
-        if(newMana[kvs[i][0]] < 0) notEnough = true;
+        if(typeof newMana[kvs[i][0]] === "number" && newMana[kvs[i][0]] < 0) notEnough = true;
       }
-      if(!notEnough) {
+      if(notEnough) {
         gs.safeSend(makeNotEnoughManaEmbed(spellCardName), msg.channel);
         return;
       }
 
       // And cast the spell
-      var res = gs.spellHandler.execute(spellCardName, msg);
+      var res = gs.spellCardHandler.execute(spellCardName, msg);
       // Results will produce their own output
       // Just put out errors
       if(res){
@@ -82,8 +89,15 @@ module.exports = function injectorMain(gs) {
       // Now update mana values
       for (var i = 0; i < kvs.length; i++) {
         if (newMana[kvs[i][0]] === player.mana[kvs[i][0]]) continue;
-        gs.setToDB("players", players._id, ["mana", kvs[i][0]], kvw[i][1]);
+        await gs.setToDB("players", player._id, ["mana", kvs[i][0]], kvs[i][1]);
       }
     }
+  });
+
+  gs.bot.on("message", async msg => {
+    if(!gs.normalMsg(msg)) return;
+    var player = await gs.getFromDB("players", msg.author.id);
+    player.mana.primal += 1;
+    await gs.setToDB("players", player._id, ["mana", "primal"], player.mana.primal);
   });
 };

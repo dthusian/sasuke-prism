@@ -1,3 +1,15 @@
+## v2.1.0
+
+First commit: b5570153f69420a3c516b9919da462b1c7a1d37a (master)
+
+- Changed activity
+- Added spellcards, mana
+  - Use prism cast to use a spellcard
+- Now all players and guilds have MongoDB database entries
+- You can now config channels the bot can use
+  - Use prism config to set these configs
+- Added prism level to show level and prism mana to show mana
+
 ## v2.0.1
 
 First commit: 6d84ef4f2f39ab0695a120ce4c43aa50682ab1ef (master)
