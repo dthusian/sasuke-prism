@@ -7,7 +7,7 @@ const CONNECTION_URI = "mongodb://sasuke_prism@localhost:27017/";
 
 // Normalizes a player's JSON
 // Upgrades from lower data versions
-function upgradePlayerJSON(obj, id){
+function defaultPlayerJSON(obj, id){
   if(!obj) obj = {};
   if(!obj._id) obj._id = id;
   if(!obj.mana) obj.mana = {};
@@ -18,6 +18,15 @@ function upgradePlayerJSON(obj, id){
   if(!obj.stats) obj.stats = {};
   if(!obj.stats.level) obj.stats.level = 1;
   if(!obj.stats.xp) obj.stats.xp = 0;
+  return obj;
+}
+
+function defaultGuildJSON(obj, id){
+  if(!obj) obj = {};
+  if(!obj._id) obj._id = id;
+  if(!obj.config) obj.config = {};
+  if(!obj.config.prefix) obj.prefix = "prism ";
+  if(!obj.channels) obj.channels = {};
   return obj;
 }
 
@@ -49,7 +58,8 @@ module.exports = async function injectorMain(gs){
     players: new gs.Mutex()
   };
   var sanitizers = {
-    players: upgradePlayerJSON
+    players: defaultPlayerJSON,
+    guilds: defaultGuildJSON
   };
 
   gs.getFromDB = async function getFromDB(db, uuid) {
@@ -58,6 +68,10 @@ module.exports = async function injectorMain(gs){
     }
     if(!caches[db][uuid]){
       var obj = await collecs[db].findOne({ "_id": uuid });
+      // Object is not in DB, doesnt exist
+      if(!obj){
+        obj = {};
+      }
       if(sanitizers[db]){
         obj = sanitizers[db](obj, uuid);
       }
@@ -88,5 +102,17 @@ module.exports = async function injectorMain(gs){
     for(var i = 0; i < dbs.length; i++){
       caches[dbs[i]] = {};
     }
+  };
+  gs.prefix = async function hasPrefix(msg) {
+    if(!msg.content) return false;
+    if(msg.guild.available) {
+      var prefix = gs.getFromDB("guilds", msg.guild.id);
+      if(msg.content.startsWith(prefix)){
+        return msg.content.substring(prefix.length);
+      } else {
+        return "";
+      }
+    }
+    return "";
   };
 };

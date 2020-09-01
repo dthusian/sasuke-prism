@@ -19,7 +19,7 @@
     "channels": {
       "type": "object",
       "properties": {
-        "noBotActivity": {
+        "noBot": {
           "type": "boolean"
         }
       }
