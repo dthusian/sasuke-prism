@@ -9,7 +9,7 @@ module.exports = function injectorMain(gs){
     GREEN: [0, 224, 0],
     AQUA: [0, 255, 127],
     CYAN: [0, 255, 255],
-    BLUE: [0, 127, 0],
+    BLUE: [0, 127, 255],
     DARK_BLUE: [0, 0, 224],
     VIOLET: [127, 0, 255],
     MAGENTA: [255, 0, 255],

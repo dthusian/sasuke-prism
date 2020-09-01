@@ -33,9 +33,14 @@
   - Typing minigame will grant all 3 types of mana
   - Users can cast spells that do funny Things
   - Spells may include
-    - Blind: User cannot read message channels
-    - Drain: Remove someone else's mana
+    - Blind: User cannot read text channels
+      - 5 Minute duration
+      - 1 Hour cooldown
+    - Drain: Remove 25% of someone else's mana
+      - 
     - Distraction: The bot (and any other sasuke-helper instances) begins typing
+      - 5 Minute duration
+      - 1 Hour cooldown
     - Void: Turn server into anarchy server, begin production of void mana
 
     - Drone strikes
@@ -46,5 +51,5 @@
     - Music: Playing music
     - Poison: Decrease the audio quality of a channel
 
-    - Cleaning webhooks
-    - Corrupt: Ban people for void mana, only works if server is voided
+    - Clean: Cleaning webhooks
+    - Funny: Ban people for void mana, only works if server is voided

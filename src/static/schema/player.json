@@ -41,9 +41,18 @@
         }
       }
     },
-    "lastPlayedTypingGame": {
-      "type": "number",
-      "description": "The ISO 8601 UTC time when this player last played the typing minigame"
+    "timers": {
+      "type": "object",
+      "properties": {
+        "lastPlayedTypingGame": {
+          "type": "string",
+          "description": "The ISO 8601 UTC time when this player last played the typing minigame"
+        },
+        "lastGotPassiveManaAndXP": {
+          "type": "string",
+          "description": "The ISO 8601 UTC time when this player last got passive mana/xp"
+        }
+      }
     }
   }
 }

@@ -108,7 +108,7 @@ module.exports = async function injectorMain(gs){
       caches[dbs[i]] = {};
     }
   };
-  gs.prefix = async function hasPrefix(msg) {
+  gs.prefix = async function prefix(msg) {
     if(!msg.content) return false;
     if(msg.guild.available) {
       var guildDb = await gs.getFromDB("guilds", msg.guild.id);
