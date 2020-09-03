@@ -1,3 +1,5 @@
+"use strict";
+
 const titles = [
   [5, "Point"],
   [10, "Segment"],
@@ -15,9 +17,11 @@ const titles = [
 ];
 
 module.exports = function injectorMain(gs){
+  /* eslint-disable -- TODO */
   gs.addXP = function addXP(amount, playerJSON) {
     //TODO
   };
+  /* eslint-enable -- TODO */
 
   gs.getXPAmount = function getXPAmount(level) {
     return 500 + 50 * level

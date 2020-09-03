@@ -35,21 +35,33 @@
   - Spells may include
     - Blind: User cannot read text channels
       - 5 Minute duration
-      - 1 Hour cooldown
+      - 1 Hour cooldown (5 Minutes if voided)
     - Drain: Remove 25% of someone else's mana
-      - 
+      - 1 Hour cooldown (None if voided)
     - Distraction: The bot (and any other sasuke-helper instances) begins typing
-      - 5 Minute duration
-      - 1 Hour cooldown
+      - 15 Minute duration
+      - 1 Hour cooldown (None if voided)
     - Void: Turn server into anarchy server, begin production of void mana
+      - Cannot be used if already voided
 
     - Drone strikes
+      - 1 Hour cooldown (15 minutes if voided)
     - Mana stream: Provides an infinite amount of Primal mana for a duration
+      - 1 Hour duration (infinite if voided)
+      - 6 Hour cooldown
     - Freeze: Commit full mute on a members
+      - 5 Minute duration
+      - 1 Hour cooldown (5 Minutes if voided)
     
     - Restore: Removes debuffs (blind, freeze) on a user
+      - 1 Hour cooldown (only if voided)
     - Music: Playing music
+      - If voided, instead does funny
     - Poison: Decrease the audio quality of a channel
+      - Cannot be used if voided
 
     - Clean: Cleaning webhooks
-    - Funny: Ban people for void mana, only works if server is voided
+      - Cannot be used if voided
+    - Funny: Ban people for void mana
+      - Only if voided
+- Switch codebase to typescript

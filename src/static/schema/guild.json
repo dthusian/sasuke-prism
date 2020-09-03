@@ -8,9 +8,6 @@
     "config": {
       "type": "object",
       "properties": {
-        "noDronestrikes": {
-          "type": "boolean"
-        },
         "prefix": {
           "type": "string"
         }
@@ -19,8 +16,8 @@
     "channels": {
       "type": "object",
       "properties": {
-        "noBot": {
-          "type": "boolean"
+        "noDroneStrikes": {
+          "type": "string"
         }
       }
     }

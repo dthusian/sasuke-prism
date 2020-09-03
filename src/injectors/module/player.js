@@ -1,3 +1,5 @@
+"use strict";
+
 var djs = require("discord.js");  
 
 module.exports = function injectorMain(gs){
@@ -8,12 +10,13 @@ module.exports = function injectorMain(gs){
     if(!cmd) return;
     var splits = cmd.trim().split(" ");
     var player = await gs.getFromDB("players", msg.author.id);
+    var descr = "";
     switch(splits[0]){
       case "mana": {
         // Show player mana
         var manaEmbed = new djs.MessageEmbed();
         manaEmbed.setTitle(`${msg.author.username}'s Mana`);
-        var descr = `Primal: ${player.mana.primal}\r\nCrystal: ${player.mana.crystal}\r\nPower: ${player.mana.power}\r\n`;
+        descr = `Primal: ${player.mana.primal}\r\nCrystal: ${player.mana.crystal}\r\nPower: ${player.mana.power}\r\n`;
         if (player.mana.void) {
           descr += `Void: ${player.mana.void}`;
         }
@@ -26,7 +29,7 @@ module.exports = function injectorMain(gs){
         var levelEmbed = new djs.MessageEmbed();
         var title = gs.getTitle(player.stats.level);
         levelEmbed.setTitle(`[${title}] ${msg.author.username}`);
-        var descr = "";
+        descr = "";
         var xpAmount = gs.getXPAmount(player.stats.level);
         var rawProgress = player.stats.xp / xpAmount;
         var progress = Math.floor(10 * rawProgress);

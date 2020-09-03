@@ -105,7 +105,9 @@ module.exports = async function injectorMain(gs){
       dbs = [db];
     }
     for(var i = 0; i < dbs.length; i++){
+      await mutexs[dbs[i]];
       caches[dbs[i]] = {};
+      mutexs[dbs[i]].release();
     }
   };
   gs.prefix = async function prefix(msg) {

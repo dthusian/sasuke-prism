@@ -1,0 +1,8 @@
+[
+  ["help", "Displays this message"],
+  ["help [command]", "Displays a description of [command]"],
+  ["settings [setting] [value]", "Edits the settings of a guild"],
+  ["cast [charm]", "Magic!"],
+  ["mana", "Checks your mana"],
+  ["level", "Checks you level"]
+]

@@ -4,6 +4,7 @@
   "scan.js": "CYAN",
   "version.js": "CYAN",
   "player.js": "BLUE",
+  "help.js": "AWUA",
   "meta-success": "GREEN",
   "meta-fail": "RED"
 }

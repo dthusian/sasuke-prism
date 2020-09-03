@@ -1,3 +1,5 @@
+"use strict";
+
 function Mutex(){
   this.acquired = false;
   this.resolverQueue = [];
