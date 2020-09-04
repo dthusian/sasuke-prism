@@ -51,6 +51,10 @@
         "lastGotPassiveManaAndXP": {
           "type": "string",
           "description": "The ISO 8601 UTC time when this player last got passive mana/xp"
+        },
+        "charm": {
+          "type": "object",
+          "description": "Timers for each spell"
         }
       }
     }

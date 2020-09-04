@@ -29,10 +29,10 @@
     - Power mana
       - Obtained with lv up
     - Void mana
-      - Obtained only with void spells
+      - Obtained only with void charms
   - Typing minigame will grant all 3 types of mana
-  - Users can cast spells that do funny Things
-  - Spells may include
+  - Users can cast charms that do funny Things
+  - Charms may include
     - Blind: User cannot read text channels
       - 5 Minute duration
       - 1 Hour cooldown (5 Minutes if voided)

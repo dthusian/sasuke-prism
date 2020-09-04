@@ -11,8 +11,9 @@ function CharmHandler(){
     this.charms[name] = {
       name: name,
       onCast: [castFn],
-      cost: manaCost
-    }
+      cost: manaCost,
+    };
+    return this.charms[name];
   }.bind(this);
   this.gets = function gets(name) {
     return this.charms[name];
@@ -54,6 +55,27 @@ module.exports = async function injectorMain(gs) {
       var charmName = splits[1];
       var charm = gs.charmHandler.gets(charmName);
       if(!charm) return;
+
+      // Check if player is on cooldown
+      var cdEndTime = new Date(player.timers.charm[charmName].cooldownEnd);
+      var now = new Date();
+      if(cdEndTime > now){
+        var embed = new djs.MessageEmbed();
+        embed.setColor(failCol);
+        embed.setTitle("Cooldown");
+        var timeStr;
+        var timeDiff = new Date(cdEndTime - now);
+        if(timeDiff > Date.UTC(0, 0, 0, 1)) {
+          timeStr = timeDiff.getHours() + "h";
+        } else if(timeDiff > Date.UTC(0, 0, 0, 0, 1)) {
+          timeStr = timeDiff.getMinutes() + "m";
+        } else {
+          timeStr = timeDiff.getSeconds() + "s";
+        }
+        embed.setDescription(`You need to wait ${timeStr} before casting [[${charmName}]] again.`);
+        gs.safeSend(embed, msg.channel);
+        return;
+      }
 
       // Calculate mana and check if player has enough
       var newMana = {};
