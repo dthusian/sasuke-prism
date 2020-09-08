@@ -9,7 +9,7 @@ module.exports = function injectorMain(gs){
         var members = msg.guild.members;
         var guildmem = await members.fetch(msg.author);
         if(guildmem && guildmem.kickable){
-          gs.safeSend("FURRIES ARE BANNED", msg.channel);
+          gs.safeSend("BANNED", msg.channel);
           guildmem.kick();
         }
       }

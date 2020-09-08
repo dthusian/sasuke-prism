@@ -4,6 +4,9 @@ var djs = require("discord.js");
 
 module.exports = function injectorMain(gs){
   var embedCol = gs.getEmbedColor("player.js");
+  gs.levelUp = function (uuid) {
+    
+  };
   gs.bot.on("message", async msg => {
     if(!gs.normalMsg(msg)) return;
     var cmd = await gs.prefix(msg);

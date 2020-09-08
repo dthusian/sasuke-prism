@@ -11,7 +11,7 @@ function CharmHandler(){
     this.charms[name] = {
       name: name,
       onCast: [castFn],
-      cost: manaCost,
+      cost: manaCost
     };
     return this.charms[name];
   }.bind(this);
@@ -38,7 +38,7 @@ module.exports = async function injectorMain(gs) {
 
   function makecharmFailEmbed(res) {
     var sfEmbed = new djs.MessageEmbed();
-    sfEmbed.setTitle("charm Failed");
+    sfEmbed.setTitle("Charm Failed");
     sfEmbed.setDescription(res);
     sfEmbed.setColor(failCol);
     return sfEmbed;
@@ -100,16 +100,12 @@ module.exports = async function injectorMain(gs) {
       // Just put out errors
       if(res){
         gs.safeSend(makecharmFailEmbed(res), msg.channel);
+        // If charm fails, don't charge mana for it
         return;
       }
 
-      // If charm fails, don't charge mana for it
-
       // Now update mana values
-      for (i = 0; i < kvs.length; i++) {
-        if (newMana[kvs[i][0]] === player.mana[kvs[i][0]]) continue;
-        await gs.setToDB("players", player._id, ["mana", kvs[i][0]], kvs[i][1]);
-      }
+      await gs.setToDB("players", player._id, ["mana"], newMana);
     }
   });
 };
