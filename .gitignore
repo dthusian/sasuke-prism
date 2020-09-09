@@ -9,3 +9,6 @@ src/var/vtcache/
 
 # Unit file
 discordcd2.service
+
+# Typescript build results
+bin/

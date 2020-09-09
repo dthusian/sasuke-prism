@@ -4,13 +4,13 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "Launch Program",
+      "name": "Node.JS Debug",
       "skipFiles": [
         "<node_internals>/**"
       ],
-      "program": "${workspaceFolder}/src/index.js",
+      "program": "${workspaceFolder}/bin/src/index.js",
       "runtimeArgs": ["--unhandled-rejections=strict"],
-      "cwd": "${workspaceFolder}/src"
+      "cwd": "${workspaceFolder}/bin/src"
     }
   ]
 }
