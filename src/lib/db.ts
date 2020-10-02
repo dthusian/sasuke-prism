@@ -1,6 +1,6 @@
 import { MongoClient } from "mongodb";
 
-type PlayerDBEntry = {
+export type PlayerDBEntry = {
   _id: string,
   version: 1,
   mana: {
@@ -20,19 +20,21 @@ type PlayerDBEntry = {
   }
 };
 
-const CONNECTION_URI = `mongodb://${encodeURIComponent(USER_NAME)}:${encodeURIComponent(mongoToken)}@127.0.0.1:27017/?authMechanism=${AUTH_TYPE}`;
+export type DBConfig = {
+  userName: string,
+  host: string,
+  dbName: string,
+  authType: string
+};
 
 export class CachedDatabase {
   client: MongoClient;
 
-  constructor() {
-    this.client = new mongo.MongoClient(CONNECTION_URI, {
-      authSource: "sasuke_prism",
-      useUnifiedTopology: true
-    });
-  }
-
-  getPlayer(uuid: string): PlayerDBEntry {
-    
+  constructor(config: DBConfig, token: string) {
+    this.client = new MongoClient(
+      `mongodb://${encodeURIComponent(config.userName)}:${encodeURIComponent(token)}@${config.host}/?authMechanism=${config.authType}`, {
+        authSource: config.dbName,
+        useUnifiedTopology: true
+      });
   }
 }

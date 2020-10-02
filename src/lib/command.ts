@@ -1,6 +1,6 @@
-import { Application } from "./app";
+import { MessageEmbed } from "discord.js";
 
 export abstract class Command {
   abstract getCommandString(): string;
-  abstract register(parentApp: Application): Promise<void>;
+  abstract onCommand(args: string[]): MessageEmbed;
 }

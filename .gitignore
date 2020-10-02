@@ -2,7 +2,7 @@
 node_modules/
 
 # Private tokens
-src/static/tokens.json
+src/static/config/_tokens.json
 
 # Virus Scan cache
 src/var/vtcache/
