@@ -1,4 +1,5 @@
-import { Db, MongoClient, Collection } from "mongodb";
+import { Db, MongoClient, Collection, OptionalId, FilterQuery, UpdateQuery } from "mongodb";
+import { Mutex } from "./mutex";
 
 export type PlayerDBEntry = {
   _id: string,
@@ -28,48 +29,71 @@ export type DBConfig = {
 export class CachedDatabase {
   client: MongoClient;
   db: Db;
-  mutex: boolean;
-  guildCollection: Collection<GuildDBEntry>;
-  guildCache: { [ _id: string ]: GuildDBEntry };
-  playerCollection: Collection<PlayerDBEntry>;
-  playerCache: { [ _id: string ]: PlayerDBEntry };
+  mutex: { [ x: string ]: Mutex };
+  collections: { [ x: string ]: Collection };
+  cache: { [ x: string ]: { [_id: string ]: unknown }};
   config: DBConfig;
 
   constructor(config: DBConfig, token: string) {
-    this.mutex = false;
     this.config = config;
     this.client = new MongoClient(
       `mongodb://${encodeURIComponent(config.userName)}:${encodeURIComponent(token)}@${config.host}/?authMechanism=${config.authType}`, {
         authSource: config.dbName,
         useUnifiedTopology: true
       });
-    this.guildCache = {};
-    this.playerCache = {};
+    this.collections = {};
+    this.cache = {};
+    this.mutex = {};
+  }
+
+  async loadCollection(name: string): Promise<void> {
+    this.collections[name] = await this.db.collection(name);
+    this.cache[name] = {};
   }
 
   async connect(): Promise<void> {
     await this.client.connect();
     this.db = this.client.db(this.config.dbName);
-    this.guildCollection = await this.db.collection("guilds");
-    this.playerCollection = await this.db.collection("players");
+    await this.loadCollection("guilds");
+    await this.loadCollection("players");
   }
 
-  async getGuild(id: string): Promise<GuildDBEntry> {
-    if(this.guildCache[id]) {
-      return this.guildCache[id];
+  // Time to throw away type safety
+  async getEntry<T>(colName: string, id: string): Promise<T> {
+    if(!this.collections[colName]) throw new Error(`Collection ${colName} not loaded`);
+    const mutex = this.mutex[colName];
+    const collec = this.collections[colName] as Collection<T>;
+    const cache = this.cache[colName] as { [ _id: string ]: T };
+    if(cache[id]) {
+      if(mutex.ac) {
+        await mutex.acquire();
+        mutex.release();
+      }
+      return this.cache[colName][id] as T;
     }
-    let entry = await this.guildCollection.findOne({ _id: id });
+    let entry = (await collec.findOne({ _id: id } as FilterQuery<T>)) as unknown as T;
     if(!entry) {
-      entry = {
-        _id: id,
-        version: 1,
-        prefix: "prism "
-      };
-      await this.guildCollection.insertOne(entry);
-      this.guildCache[id] = entry;
+      entry = {} as T;
+      await collec.insertOne(entry as OptionalId<T>);
+      cache[id] = entry;
       return entry;
     }
-    this.guildCache[id] = entry;
+    this.cache[colName][id] = entry;
     return entry;
+  }
+
+  async updateEntry<T>(colName: string, id: string, updoc: UpdateQuery<T>): Promise<void> { 
+    const mutex = this.mutex[colName];
+    await mutex.acquire();
+    const collec = this.collections[colName] as Collection<T>;
+    await collec.updateOne({ _id: id } as FilterQuery<T>, updoc);
+    this.cache[colName][id] = void 0;
+    mutex.release();
+  }
+
+  async clearCache(colName: string): Promise<void> {
+    await this.mutex[colName].acquire();
+    this.cache[colName] = {};
+    this.mutex[colName].release();
   }
 }

@@ -1,12 +1,12 @@
 import { Command } from "../lib/command";
 import { MessageEmbed } from "discord.js";
-import { Application } from "../lib/app";
+import { ExecContext } from "../lib/context";
 
 export class DiceCmd extends Command {
   getCommandString(): string[] {
     return ["dice", "d"];
   }
-  async onCommand(args: string[], app: Application): Promise<MessageEmbed> {
+  async onCommand(args: string[], ctx: ExecContext): Promise<MessageEmbed> {
     const embed = new MessageEmbed();
     let totalRolls = 0;
     args.forEach(v => {
@@ -30,7 +30,7 @@ export class DiceCmd extends Command {
       }
     });
     embed.setTitle(`Result of ${totalRolls} dice`);
-    embed.setColor(await app.config.loadColor("dice"));
+    embed.setColor(await ctx.hostApp.config.loadColor("dice"));
     return embed;
   }
 }
