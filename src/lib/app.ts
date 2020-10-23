@@ -1,4 +1,4 @@
-import { Client, Guild, Message } from "discord.js";
+import { Client, MessageEmbed } from "discord.js";
 
 import { Command } from "./command";
 import { ConfigManager } from "./config";
@@ -18,21 +18,31 @@ export class Application {
 
   async load(): Promise<void> {
     this.db = new CachedDatabase(await this.config.load("mongodb") as DBConfig, await this.config.token("mongodb"));
-    this.db.connect();
+    await this.db.connect();
     this.bot.on("message", async msg => {
       // Validate message
       if(!(msg.guild && !msg.author.bot && msg.content)) return;
 
       // Check if it's a valid command
-      var gconf = await this.db.getGuild(msg.guild.id);
+      const gconf = await this.db.getGuild(msg.guild.id);
       if(!msg.content.startsWith(gconf.prefix)) return;
-      var strippedMsg = msg.content.substring(gconf.prefix.length);
-      var args = strippedMsg.split(" ");
+      const strippedMsg = msg.content.substring(gconf.prefix.length);
+      const args = strippedMsg.split(" ");
       if(!this.commands[args[0]]) return;
 
       // Run the command
-      var cmd = this.commands[args[0]];
-      cmd.onCommand(args.slice(1), this);
+      const cmd = this.commands[args[0]];
+      const embed = cmd.onCommand(args.slice(1), this);
+      let toSend: MessageEmbed;
+      if(embed instanceof Promise) {
+        toSend = await embed;
+      } else {
+        toSend = embed;
+      }
+      msg.channel.send(toSend);
+    });
+    this.bot.on("ready", () => {
+      console.log("Bot ready!");
     });
   }
 
@@ -41,6 +51,7 @@ export class Application {
   }
 
   async execute(): Promise<void> {
-    await this.bot.login(await this.config.token("discordapi"));
+    const token = await this.config.token("discordapi");
+    await this.bot.login(token);
   }
 }

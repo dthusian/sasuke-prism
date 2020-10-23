@@ -28,35 +28,48 @@ export type DBConfig = {
 export class CachedDatabase {
   client: MongoClient;
   db: Db;
-  guildCollection: Collection;
+  mutex: boolean;
+  guildCollection: Collection<GuildDBEntry>;
+  guildCache: { [ _id: string ]: GuildDBEntry };
+  playerCollection: Collection<PlayerDBEntry>;
+  playerCache: { [ _id: string ]: PlayerDBEntry };
   config: DBConfig;
 
   constructor(config: DBConfig, token: string) {
+    this.mutex = false;
     this.config = config;
     this.client = new MongoClient(
       `mongodb://${encodeURIComponent(config.userName)}:${encodeURIComponent(token)}@${config.host}/?authMechanism=${config.authType}`, {
         authSource: config.dbName,
         useUnifiedTopology: true
       });
+    this.guildCache = {};
+    this.playerCache = {};
   }
 
-  async connect() {
+  async connect(): Promise<void> {
     await this.client.connect();
     this.db = this.client.db(this.config.dbName);
-    this.guildCollection = this.db.collection("guilds");
+    this.guildCollection = await this.db.collection("guilds");
+    this.playerCollection = await this.db.collection("players");
   }
 
   async getGuild(id: string): Promise<GuildDBEntry> {
-    var entry = await this.guildCollection.findOne({ _id: id });
+    if(this.guildCache[id]) {
+      return this.guildCache[id];
+    }
+    let entry = await this.guildCollection.findOne({ _id: id });
     if(!entry) {
       entry = {
         _id: id,
         version: 1,
-        prefix: "="
+        prefix: "prism "
       };
       await this.guildCollection.insertOne(entry);
+      this.guildCache[id] = entry;
       return entry;
     }
+    this.guildCache[id] = entry;
     return entry;
   }
 }

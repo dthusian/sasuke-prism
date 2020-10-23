@@ -3,5 +3,5 @@ import { Application } from "./app";
 
 export abstract class Command {
   abstract getCommandString(): string[];
-  abstract onCommand(args: string[], hostApp: Application): MessageEmbed;
+  abstract onCommand(args: string[], hostApp: Application): Promise<MessageEmbed> | MessageEmbed;
 }

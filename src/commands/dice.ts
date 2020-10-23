@@ -1,12 +1,36 @@
 import { Command } from "../lib/command";
-import { Application } from "../lib/app";
 import { MessageEmbed } from "discord.js";
+import { Application } from "../lib/app";
 
 export class DiceCmd extends Command {
   getCommandString(): string[] {
     return ["dice", "d"];
   }
-  onCommand(args: string[]): MessageEmbed {
-    throw new Error("Method not implemented.");
+  async onCommand(args: string[], app: Application): Promise<MessageEmbed> {
+    const embed = new MessageEmbed();
+    let totalRolls = 0;
+    args.forEach(v => {
+      if(v.match(/(^|\b)[0-9]*d[0-9]+\b($|\b)/i)) {
+        const spl = v.split("d");
+        let numRolls: number;
+        if(spl[0].length === 0) {
+          numRolls = 1;
+        } else {
+          numRolls = parseInt(spl[0]);
+        }
+        const diceSides = parseInt(spl[1]);
+        if(isNaN(numRolls) || isNaN(diceSides)) {
+          return;
+        }
+        const rolls = [];
+        for(let i = 0; i < numRolls; i++) 
+          rolls.push(Math.floor(Math.random() * diceSides) + 1);
+        embed.addField(`Result of ${v}`, rolls.join(", "));
+        totalRolls += numRolls;
+      }
+    });
+    embed.setTitle(`Result of ${totalRolls} dice`);
+    embed.setColor(await app.config.loadColor("dice"));
+    return embed;
   }
 }
