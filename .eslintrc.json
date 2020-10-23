@@ -19,6 +19,7 @@
     "no-template-curly-in-string": "error",
     "no-unreachable-loop": "error",
     "eqeqeq": "error",
+    "no-empty-function": "off",
     "no-eval": "error",
     "no-extend-native": "error",
     "no-implied-eval": "error",
