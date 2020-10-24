@@ -1,12 +1,12 @@
 import { Command } from "../lib/command";
 import { MessageEmbed } from "discord.js";
-import { ExecContext } from "../lib/context";
+import { CommandExecContext } from "../lib/context";
 
 export class DiceCmd extends Command {
   getCommandString(): string[] {
     return ["dice", "d"];
   }
-  async onCommand(args: string[], ctx: ExecContext): Promise<MessageEmbed> {
+  async onCommand(args: string[], ctx: CommandExecContext): Promise<MessageEmbed> {
     const embed = new MessageEmbed();
     let totalRolls = 0;
     args.forEach(v => {

@@ -1,7 +1,7 @@
 import { MessageEmbed } from "discord.js";
-import { ExecContext } from "./context";
+import { CommandExecContext } from "./context";
 
 export abstract class Command {
   abstract getCommandString(): string[];
-  abstract onCommand(args: string[], ctx: ExecContext): Promise<MessageEmbed> | MessageEmbed;
+  abstract onCommand(args: string[], ctx: CommandExecContext): Promise<MessageEmbed> | MessageEmbed;
 }

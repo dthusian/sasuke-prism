@@ -2,7 +2,8 @@ import { Client, MessageEmbed } from "discord.js";
 
 import { Command } from "./command";
 import { ConfigManager } from "./config";
-import { CachedDatabase, DBConfig } from "./db";
+import { CommandExecContext } from "./context";
+import { CachedDatabase, DBConfig, GuildDBEntry } from "./db";
 
 export class Application {
   bot: Client;
@@ -24,7 +25,7 @@ export class Application {
       if(!(msg.guild && !msg.author.bot && msg.content)) return;
 
       // Check if it's a valid command
-      const gconf = await this.db.getGuild(msg.guild.id);
+      const gconf = await this.db.getEntry<GuildDBEntry>("guilds", msg.guild.id);
       if(!msg.content.startsWith(gconf.prefix)) return;
       const strippedMsg = msg.content.substring(gconf.prefix.length);
       const args = strippedMsg.split(" ");
@@ -32,7 +33,7 @@ export class Application {
 
       // Run the command
       const cmd = this.commands[args[0]];
-      const embed = cmd.onCommand(args.slice(1), this);
+      const embed = cmd.onCommand(args.slice(1), new CommandExecContext(this, msg, gconf));
       let toSend: MessageEmbed;
       if(embed instanceof Promise) {
         toSend = await embed;

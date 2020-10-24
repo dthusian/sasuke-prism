@@ -2,7 +2,14 @@ import { Message } from "discord.js";
 import { Application } from "./app";
 import { GuildDBEntry, PlayerDBEntry } from "./db";
 
-export class ExecContext {
+export class LoadExecContext {
+  hostApp: Application;
+  constructor(app: Application) {
+    this.hostApp = app;
+  }
+}
+
+export class CommandExecContext {
   hostApp: Application;
   message: Message;
   guildInfo: GuildDBEntry;

@@ -3,6 +3,10 @@ type ResolveFn<T> = (v: T) => void;
 export class Mutex {
   ac: boolean;
   queue: ResolveFn<void>[];
+  constructor() {
+    this.ac = false;
+    this.queue = [];
+  }
   acquire(): Promise<void> {
     return new Promise(resolve => {
       if(this.ac) {
@@ -15,7 +19,8 @@ export class Mutex {
   }
   release() {
     if(this.queue.length){
-      this.queue.shift()();
+      const shifted = this.queue.shift();
+      if(shifted) shifted();
     }else{
       this.ac = false;
     }

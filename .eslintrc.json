@@ -21,6 +21,7 @@
     "eqeqeq": "error",
     "no-empty-function": "off",
     "no-eval": "error",
+    "no-explicit-empty": "off",
     "no-extend-native": "error",
     "no-implied-eval": "error",
     "no-loop-func": "error",
