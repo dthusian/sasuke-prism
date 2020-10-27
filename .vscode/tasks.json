@@ -2,11 +2,12 @@
 	"version": "2.0.0",
 	"tasks": [
 		{
-			"type": "grunt",
-			"task": "pre-debug",
+			"type": "npm",
+			"script": "build",
 			"group": "build",
 			"problemMatcher": [],
-			"label": "grunt: pre-debug"
+			"label": "npm: build",
+			"detail": "node build.js"
 		}
 	]
 }

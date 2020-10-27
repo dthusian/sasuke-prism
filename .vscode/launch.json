@@ -8,7 +8,7 @@
       "skipFiles": [
         "<node_internals>/**"
       ],
-      "preLaunchTask": "grunt: pre-debug",
+      "preLaunchTask": "npm: build",
       "program": "${workspaceFolder}/bin/index.js",
       "runtimeArgs": ["--unhandled-rejections=strict"],
       "cwd": "${workspaceFolder}/bin/"

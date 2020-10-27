@@ -49,6 +49,7 @@ export class CachedDatabase {
   async loadCollection(name: string): Promise<void> {
     this.collections[name] = await this.db.collection(name);
     this.cache[name] = {};
+    this.mutex[name] = new Mutex();
   }
 
   async connect(): Promise<void> {

@@ -19,6 +19,6 @@
     - Dodecahedron: Lv 96 - 110
     - Icosahedron: Lv 111 - 125
     - Hyperprism: Lv 126+
-- No more mana system
+  - Fix levelling code to be type-safe
 - Switch codebase to typescript
 - Add music bot functionality
