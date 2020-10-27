@@ -1,25 +1,31 @@
 import { Client, MessageEmbed } from "discord.js";
+import { Logger } from "./logger";
+import { Behavior } from "./behavior";
 
 import { Command } from "./command";
 import { ConfigManager } from "./config";
-import { CommandExecContext } from "./context";
+import { CommandExecContext, LoadExecContext } from "./context";
 import { CachedDatabase, DBConfig, GuildDBEntry } from "./db";
 
 export class Application {
   bot: Client;
   config: ConfigManager;
   db: CachedDatabase;
+  logs: Logger;
   commands: { [ id: string]: Command };
 
   constructor(){
     this.bot = new Client();
     this.config = new ConfigManager();
+    this.logs = Logger.toStdout();
     this.commands = {};
+    this.logs.logInfo("Bot initialize");
   }
 
   async load(): Promise<void> {
     this.db = new CachedDatabase(await this.config.load("mongodb") as DBConfig, await this.config.token("mongodb"));
     await this.db.connect();
+    this.logs.logInfo("Connected to MongoDB [" + this.db.config.host + "]");
     this.bot.on("message", async msg => {
       // Validate message
       if(!(msg.guild && !msg.author.bot && msg.content)) return;
@@ -43,12 +49,16 @@ export class Application {
       msg.channel.send(toSend);
     });
     this.bot.on("ready", () => {
-      console.log("Bot ready!");
+      this.logs.logInfo("Connected to Discord");
     });
   }
 
   async registerCommand(cmd: Command): Promise<void> {
     cmd.getCommandString().forEach(v => this.commands[v] = cmd);
+  }
+
+  async addBehavior(behavior: Behavior): Promise<void> {
+    await behavior.load(new LoadExecContext(this));
   }
 
   async execute(): Promise<void> {
