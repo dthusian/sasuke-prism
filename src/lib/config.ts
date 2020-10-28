@@ -11,7 +11,7 @@ export class ConfigManager {
     this.configCache[name] = json;
     return json;
   }
-  async token(name: string): Promise<string> {
+  async loadToken(name: string): Promise<string> {
     if(!this.configCache["_tokens"]) {
       this.configCache["_tokens"] = JSON.parse((await promises.readFile("./static/config/_tokens.json")).toString());
     }

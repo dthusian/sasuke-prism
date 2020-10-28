@@ -4,18 +4,19 @@
   "description": "",
   "main": "./bin/index.js",
   "dependencies": {
-    "@types/mongodb": "^3.5.27",
-    "@types/ws": "^7.2.7",
     "discord.js": "^12.2.0",
     "form-data": "^3.0.0",
     "mongodb": "^3.6.0",
-    "node-fetch": "^2.6.1"
+    "node-fetch": "^2.6.1",
+    "typescript": "^4.0.5"
   },
   "devDependencies": {
+    "@types/mongodb": "^3.5.31",
+    "@types/node-fetch": "^2.5.7",
+    "@types/ws": "^7.2.9",
     "@typescript-eslint/eslint-plugin": "^4.1.0",
     "@typescript-eslint/parser": "^4.1.0",
-    "eslint": "^7.8.1",
-    "typescript": "^4.0.2"
+    "eslint": "^7.8.1"
   },
   "scripts": {
     "test": "npx eslint . --ext .ts",

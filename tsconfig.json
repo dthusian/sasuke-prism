@@ -5,6 +5,7 @@
     "module": "CommonJS",
     "noImplicitAny": true,
     "strictNullChecks": true,
+    "incremental": true,
     "sourceMap": true,
     "outDir": "bin/",
     "typeRoots": [

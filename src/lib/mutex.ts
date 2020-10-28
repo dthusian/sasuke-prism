@@ -17,7 +17,7 @@ export class Mutex {
       }
     });
   }
-  release() {
+  release(): void {
     if(this.queue.length){
       const shifted = this.queue.shift();
       if(shifted) shifted();

@@ -1,11 +1,33 @@
-import { Client, MessageEmbed } from "discord.js";
+import { TextChannel, Client, MessageEmbed, DMChannel, NewsChannel } from "discord.js";
 import { Logger } from "./logger";
 import { Behavior } from "./behavior";
 
-import { Command } from "./command";
+import { Command, CommandReturnType } from "./command";
 import { ConfigManager } from "./config";
 import { CommandExecContext, LoadExecContext } from "./context";
 import { CachedDatabase, DBConfig, GuildDBEntry } from "./db";
+
+// CommandReturnType is such a dumpster fire of type unions
+async function resolveAndSendEmbeds(channel: TextChannel | DMChannel | NewsChannel, ret: CommandReturnType) {
+  let resolvedProm: (MessageEmbed | null)[] | (MessageEmbed | null);
+  if(ret instanceof Promise) {
+    resolvedProm = await ret;
+  } else {
+    resolvedProm = ret;
+  }
+  let resolvedArray: (MessageEmbed | null)[];
+  if(resolvedProm instanceof Array) {
+    resolvedArray = resolvedProm;
+  } else {
+    resolvedArray = [resolvedProm];
+  }
+  const cleanArray = resolvedArray.filter(v => v) as MessageEmbed[];
+  await Promise.all(cleanArray.map(async v => {
+    try {
+      await channel.send(v);
+    } catch(e) { return; }
+  }));
+}
 
 export class Application {
   bot: Client;
@@ -23,7 +45,7 @@ export class Application {
   }
 
   async load(): Promise<void> {
-    this.db = new CachedDatabase(await this.config.load("mongodb") as DBConfig, await this.config.token("mongodb"));
+    this.db = new CachedDatabase(await this.config.load("mongodb") as DBConfig, await this.config.loadToken("mongodb"));
     await this.db.connect();
     this.logs.logInfo("Connected to MongoDB [" + this.db.config.host + "]");
     this.bot.on("message", async msg => {
@@ -40,13 +62,7 @@ export class Application {
       // Run the command
       const cmd = this.commands[args[0]];
       const embed = cmd.onCommand(args.slice(1), new CommandExecContext(this, msg, gconf));
-      let toSend: MessageEmbed;
-      if(embed instanceof Promise) {
-        toSend = await embed;
-      } else {
-        toSend = embed;
-      }
-      msg.channel.send(toSend);
+      resolveAndSendEmbeds(msg.channel, embed);
     });
     this.bot.on("ready", () => {
       this.logs.logInfo("Connected to Discord");
@@ -62,7 +78,7 @@ export class Application {
   }
 
   async execute(): Promise<void> {
-    const token = await this.config.token("discordapi");
+    const token = await this.config.loadToken("discordapi");
     await this.bot.login(token);
   }
 }
