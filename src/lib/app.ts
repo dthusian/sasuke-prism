@@ -81,4 +81,8 @@ export class Application {
     const token = await this.config.loadToken("discordapi");
     await this.bot.login(token);
   }
+
+  getVersion(): string {
+    return "2.1";
+  }
 }

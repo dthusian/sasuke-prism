@@ -1,6 +1,16 @@
+## v2.2.0
+
+First commit: 0f8f56c5a16598d6208cd7955d097bd7b34aa6c6 (typescript)
+Last commit: TBD
+
+- Everything rewritten in typescript
+- The bot actually has commands now (kinda required for top.gg integration)
+- I screwed up my backend so now sasuke prism is dead until this version rolls out
+
 ## v2.1.0
 
 First commit: b5570153f69420a3c516b9919da462b1c7a1d37a (master)
+Last commit: never finished
 
 - Changed activity
 - Added charms, mana

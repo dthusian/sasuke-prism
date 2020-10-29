@@ -1,5 +1,6 @@
 {
   "dice": "CYAN",
   "level": "CYAN",
-  "ip": "CYAN"
+  "ip": "CYAN",
+  "help": "CYAN"
 }

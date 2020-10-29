@@ -1,5 +1,5 @@
 import { MessageEmbed } from "discord.js";
-import { Command } from "../lib/command";
+import { Command, HelpMessage } from "../lib/command";
 import { CommandExecContext } from "../lib/context";
 import { getReqdExp, getTitleFromLevel } from "../lib/game/level";
 
@@ -7,7 +7,13 @@ export class LevelCmd extends Command {
   getCommandString(): string[] {
     return ["level"];
   }
-
+  getHelpMessage(): HelpMessage {
+    return {
+      "syntax": "",
+      "example": "",
+      "message": "Displays your level."
+    }
+  }
   async onCommand(args: string[], ctx: CommandExecContext): Promise<MessageEmbed> {
     const pdata = await ctx.getPlayerData();
     const embed = new MessageEmbed();

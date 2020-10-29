@@ -1,5 +1,5 @@
 import { MessageEmbed } from "discord.js";
-import { Command } from "../lib/command";
+import { Command, HelpMessage } from "../lib/command";
 import { CommandExecContext } from "../lib/context";
 import fetch from "node-fetch";
 
@@ -41,6 +41,13 @@ export class IPCmd extends Command {
   }
   getCommandString(): string[] {
     return ["ip"];
+  }
+  getHelpMessage(): HelpMessage {
+    return {
+      syntax: "<ip address> [<ip address> ...]",
+      example: "172.217.0.238 172.217.1.163",
+      message: "Retrieves some information about an IP address. Any number of IP addresses can be specified, each of them are retrieved separately."
+    };
   }
   async onCommand(args: string[], ctx: CommandExecContext): Promise<(MessageEmbed | null)[] | null> {
     const key = await ctx.hostApp.config.loadToken("ipdata");
