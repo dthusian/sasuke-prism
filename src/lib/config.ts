@@ -23,4 +23,7 @@ export class ConfigManager {
       (await this.load("embedColors") as { [x: string]: string })[name]
     ];
   }
+  async loadFile(path: string): Promise<Buffer> {
+    return await promises.readFile("./static/assets/" + path);
+  }
 }

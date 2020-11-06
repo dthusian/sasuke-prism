@@ -9,19 +9,19 @@ import { CachedDatabase, DBConfig, GuildDBEntry } from "./db";
 
 // CommandReturnType is such a dumpster fire of type unions
 async function resolveAndSendEmbeds(channel: TextChannel | DMChannel | NewsChannel, ret: CommandReturnType) {
-  let resolvedProm: (MessageEmbed | null)[] | (MessageEmbed | null);
+  let resolvedProm: (MessageEmbed | string | null)[] | (MessageEmbed | string | null);
   if(ret instanceof Promise) {
     resolvedProm = await ret;
   } else {
     resolvedProm = ret;
   }
-  let resolvedArray: (MessageEmbed | null)[];
+  let resolvedArray: (MessageEmbed | string | null)[];
   if(resolvedProm instanceof Array) {
     resolvedArray = resolvedProm;
   } else {
     resolvedArray = [resolvedProm];
   }
-  const cleanArray = resolvedArray.filter(v => v) as MessageEmbed[];
+  const cleanArray = resolvedArray.filter(v => v) as (MessageEmbed | string)[];
   await Promise.all(cleanArray.map(async v => {
     try {
       await channel.send(v);
@@ -57,10 +57,11 @@ export class Application {
       if(!msg.content.startsWith(gconf.prefix)) return;
       const strippedMsg = msg.content.substring(gconf.prefix.length);
       const args = strippedMsg.split(" ");
-      if(!this.commands[args[0]]) return;
+      const commandName = args[0].toLowerCase();
+      if(!this.commands[commandName]) return;
 
       // Run the command
-      const cmd = this.commands[args[0]];
+      const cmd = this.commands[commandName];
       const embed = cmd.onCommand(args.slice(1), new CommandExecContext(this, msg, gconf));
       resolveAndSendEmbeds(msg.channel, embed);
     });
@@ -83,6 +84,6 @@ export class Application {
   }
 
   getVersion(): string {
-    return "2.1";
+    return "2.2";
   }
 }

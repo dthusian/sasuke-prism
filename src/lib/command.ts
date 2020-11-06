@@ -2,8 +2,9 @@ import { MessageEmbed } from "discord.js";
 import { CommandExecContext } from "./context";
 
 type PossiblyAsync<T> = Promise<T> | T;
-type PossiblyArrayOrNull<T> = (T | null)[] | (T | null);
-export type CommandReturnType = PossiblyAsync<PossiblyArrayOrNull<MessageEmbed> >;
+type PossiblyArray<T> = T[] | T;
+type MessageContent = MessageEmbed | string | null;
+export type CommandReturnType = PossiblyAsync<PossiblyArray<MessageContent> >;
 export type HelpMessage = { syntax: string, message: string, example: string };
 
 export abstract class Command {

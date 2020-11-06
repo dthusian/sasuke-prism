@@ -6,6 +6,7 @@ import { IPCmd } from "./commands/ip";
 
 import { ActivityBehavior } from "./behavior/activity";
 import { UwUBanBehavior } from "./behavior/banuwu";
+import { DronestrikeCmd } from "./commands/dronestrike";
 
 async function main() {
   const app = new Application();
@@ -14,6 +15,7 @@ async function main() {
   app.registerCommand(new DiceCmd());
   app.registerCommand(new LevelCmd());
   app.registerCommand(new IPCmd());
+  app.registerCommand(new DronestrikeCmd());
 
   app.addBehavior(new ActivityBehavior());
   app.addBehavior(new UwUBanBehavior());

@@ -4,8 +4,9 @@ First commit: 0f8f56c5a16598d6208cd7955d097bd7b34aa6c6 (typescript)
 Last commit: TBD
 
 - Everything rewritten in typescript
-- The bot actually has commands now (kinda required for top.gg integration)
+- The bot actually has a prefix now (required for top.gg integration)
 - I screwed up my backend so now sasuke prism is dead until this version rolls out
+- Dronestrikes are now harsher (they last longer)
 
 ## v2.1.0
 
