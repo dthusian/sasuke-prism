@@ -5,3 +5,5 @@
 - Switch codebase to typescript
   - Add the rest of the commands in
 - Add music bot functionality
+- Add scan file behavior back
+- Sudo

@@ -13,29 +13,40 @@ class DroneManager {
 
   ongoing: {
     [ gid: string ]: { prom: Promise<void>, res: () => void, bots: number, fired: number }
+  };
+
+  constructor() {
+    this.ongoing = {};
   }
 
-  singleHit(whList: Webhook[], content: string): Promise<void> {
-    return Promise.all(whList.map(async v => void await v.send(content))) as unknown as Promise<void>;
+  async singleHit(whList: Webhook[], content: string): Promise<void> {
+    const proms = [];
+    for(let i = 0; i < whList.length; i++) {
+      if(whList[i]){
+        proms.push(whList[i].send(content)
+        .catch(() => {
+          delete whList[i];
+        }));
+      }
+    }
+    await Promise.all(proms);
   }
 
-  dronestrike(gid: string, app: Application, content: string): void {
+  dronestrike(gid: string, app: Application, content: string, cid: string): void {
     if(!this.hasDronestrike(gid)) {
       this.ongoing[gid] = {
         prom: new Promise(resolve => {
-          const stat = this.ongoing[gid];
-          stat.res = resolve;
           const guild = app.bot.guilds.resolve(gid);
           if(guild === null) {
             resolve();
             return;
           }
           Promise.all(guild.channels.cache.array().map(async v => {
-            if(v instanceof TextChannel) {
+            if(v instanceof TextChannel && v.id !== cid) {
               const hooks = (await v.fetchWebhooks()).array();
               for(let i = hooks.length; i < DISCORD_MAX_WEBHOOKS; i++) {
                 hooks.push(await v.createWebhook("Attack Helicopter " + this.makeDrone(), {
-                  avatar: await app.config.loadFile("attack-heli.txt")
+                  avatar: (await app.config.loadFile("attack-heli.txt")).toString()
                 }));
               }
               return hooks;
@@ -46,11 +57,12 @@ class DroneManager {
             const interval = setInterval(() => {
               this.singleHit(fullhooklist, content);
             }, 2000);
-            setTimeout(() => {
+            setTimeout(endStrike, 1000000);
+            function endStrike() {
               clearInterval(interval);
               resolve();
               delete this.ongoing[gid];
-            }, 1000000);
+            }
           });
         }),
         res: () => { return; },
@@ -95,7 +107,7 @@ export class DronestrikeCmd extends Command {
       if(this.manager.hasDronestrike(gid)) {
         return "There is already a dronestrike ongoing!";
       } else {
-        this.manager.dronestrike(gid, ctx.hostApp, message);
+        this.manager.dronestrike(gid, ctx.hostApp, message, ctx.message.channel.id);
         return "Dronestrike authorized.";
       }
     }
