@@ -4,6 +4,13 @@
   - Fix levelling code to be type-safe
 - Switch codebase to typescript
   - Add the rest of the commands in
-- Add music bot functionality
+    - sudo
+    - version
+  - Add music bot functionality
+    - play, p
+    - pause
+    - queue, q
+    - skip
+    - skipvote
+    - disconnect, die
 - Add scan file behavior back
-- Sudo

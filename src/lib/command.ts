@@ -5,7 +5,7 @@ type PossiblyAsync<T> = Promise<T> | T;
 type PossiblyArray<T> = T[] | T;
 type MessageContent = MessageEmbed | string | null;
 export type CommandReturnType = PossiblyAsync<PossiblyArray<MessageContent> >;
-export type HelpMessage = { syntax: string, message: string, example: string };
+export type HelpMessage = { syntax: string | string[], message: string, example: string | string[] };
 
 export abstract class Command {
   abstract getCommandString(): string[];

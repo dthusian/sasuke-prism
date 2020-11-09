@@ -27,9 +27,18 @@ export class HelpCmd extends Command {
       if(!helpMsg) return null;
       const embed = new MessageEmbed();
       embed.setTitle("Command - " + args[0]);
-      embed.addField("Syntax", helpMsg.syntax);
+      const baseCmd = ctx.guildInfo.prefix + args[0];
+      if(helpMsg.syntax instanceof Array) {
+        embed.addField("Syntax", `${baseCmd} ${helpMsg.syntax.join("\n")}`);
+      } else {
+        embed.addField("Syntax", `${baseCmd} ${helpMsg.syntax}`);
+      }
       embed.addField("Description", helpMsg.message);
-      embed.addField("Example", helpMsg.example);
+      if(helpMsg.example instanceof Array) {
+        embed.addField("Example", `${baseCmd} ${helpMsg.example.join("\n")}`);
+      } else {
+        embed.addField("Example", `${baseCmd} ${helpMsg.example}`);
+      }
       embed.setColor(await ctx.hostApp.config.loadColor("help"));
       return embed;
     }
