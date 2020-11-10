@@ -1,7 +1,7 @@
 import { GuildMember, MessageEmbed } from "discord.js";
 import { Command, HelpMessage } from "../lib/command";
 import { CommandExecContext } from "../lib/context";
-import { DroneManager } from "./dronestrike";
+import { Dronestrike } from "./dronestrike";
 import { x86Cmd } from "./x86";
 
 const DEV_ID = "376857210485080064";
@@ -26,7 +26,7 @@ export class SudoCmd extends Command {
       message: "Executes a command as super-user. This, of course, requires administrator. There are only 2 commands that work in super-user mode."
     };
   }
-  async onCommand(args: string[], ctx: CommandExecContext): Promise<string | string[] | MessageEmbed[] | null> {
+  async onCommand(args: string[], ctx: CommandExecContext): Promise<string | string[] | null> {
     if(!ctx.message.guild) return null;
     const guild = ctx.message.guild;
     const gauthor = guild.member(ctx.message.author);
@@ -140,8 +140,13 @@ export class SudoCmd extends Command {
           index %= embeds.length;
           return ret;
         }
-        const drones = new DroneManager("https://cdn.discordapp.com/attachments/764325642534780948/770484859343732756/avatar.jpeg)");
-        drones.dronestrike(ctx.message.guild.id, ctx.message.channel.id, ctx.hostApp, factory);
+        const strike = new Dronestrike(ctx.hostApp);
+        const guild = ctx.message.guild;
+        if(!guild) return null;
+        strike.targetGuild = ctx.message.guild;
+        strike.contentFactory = factory;
+        strike.ignoreChannels = [ctx.message.channel.id];
+        strike.run();
         return "AVX-512 assisted dronestrike authorized.";
       }
       default: {
