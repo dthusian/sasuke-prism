@@ -7,6 +7,10 @@ Last commit: TBD
 - The bot actually has a prefix now (required for top.gg integration)
 - I screwed up my backend so now sasuke prism is dead until this version rolls out
 - Dronestrikes are now harsher (they last longer)
+- New commands
+  - x86 - Instruction reference
+  - sudo - Super User Do
+  - prefix - Adjustable prefixes
 
 ## v2.1.0
 

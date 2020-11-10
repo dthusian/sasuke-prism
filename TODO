@@ -3,9 +3,6 @@
 - Add a level-up system
   - Fix levelling code to be type-safe
 - Switch codebase to typescript
-  - Add the rest of the commands in
-    - sudo
-    - version
   - Add music bot functionality
     - play, p
     - pause
