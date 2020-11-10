@@ -1,0 +1,1 @@
+{"title":"STD — Set Direction Flag","fields":[{"name":"Instruction Modes","value":"`STD`"},{"name":"Description","value":"Sets the DF flag in the EFLAGS register. When the DF flag is set to 1, string operations decrement the index registers (ESI and/or EDI). Operation is the same in all modes."}],"footer":{"text":"Thanks to Felix Cloutier for the online x86 reference"}}

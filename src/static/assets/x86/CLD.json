@@ -1,0 +1,1 @@
+{"title":"CLD — Clear Direction Flag","fields":[{"name":"Instruction Modes","value":"`CLD`"},{"name":"Description","value":"Clears the DF flag in the EFLAGS register. When the DF flag is set to 0, string operations increment the index registers (ESI and/or EDI). Operation is the same in all modes."}],"footer":{"text":"Thanks to Felix Cloutier for the online x86 reference"}}

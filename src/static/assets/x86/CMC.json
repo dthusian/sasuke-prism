@@ -1,0 +1,1 @@
+{"title":"CMC — Complement Carry Flag","fields":[{"name":"Instruction Modes","value":"`CMC`"},{"name":"Description","value":"Complements the CF flag in the EFLAGS register. CMC operation is the same in non-64-bit modes and 64-bit mode."}],"footer":{"text":"Thanks to Felix Cloutier for the online x86 reference"}}

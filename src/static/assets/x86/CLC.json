@@ -1,0 +1,1 @@
+{"title":"CLC — Clear Carry Flag","fields":[{"name":"Instruction Modes","value":"`CLC`"},{"name":"Description","value":"Clears the CF flag in the EFLAGS register. Operation is the same in all modes."}],"footer":{"text":"Thanks to Felix Cloutier for the online x86 reference"}}
