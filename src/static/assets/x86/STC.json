@@ -1,1 +1,1 @@
-{"title":"STC — Set Carry Flag","fields":[{"name":"Instruction Modes","value":"`STC`"},{"name":"Description","value":"Sets the CF flag in the EFLAGS register. Operation is the same in all modes."}],"footer":{"text":"Thanks to Felix Cloutier for the online x86 reference"}}
+{"title":"STC — Set Carry Flag","fields":[{"name":"Instruction Modes","value":"`STC`"},{"name":"Description","value":"Sets the CF flag in the EFLAGS register. Operation is the same in all modes."}],"color":65535,"footer":{"text":"Thanks to Felix Cloutier for the online x86 reference"}}
