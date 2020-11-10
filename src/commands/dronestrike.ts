@@ -1,11 +1,11 @@
-import { TextChannel, Webhook } from "discord.js";
+import { MessageEmbed, TextChannel, Webhook } from "discord.js";
 import { Application } from "../lib/app";
 import { Command, HelpMessage } from "../lib/command";
 import { CommandExecContext, LoadExecContext } from "../lib/context";
 
 const DISCORD_MAX_WEBHOOKS = 10;
 
-class DroneManager {
+export class DroneManager {
   droneFactory = 10;
   attackheli: string;
   makeDrone(): number {
@@ -21,11 +21,11 @@ class DroneManager {
     this.attackheli = attackheli;
   }
 
-  async singleHit(whList: Webhook[], content: string): Promise<void> {
+  async singleHit(whList: Webhook[], content: () => string | MessageEmbed): Promise<void> {
     const proms = [];
     for(let i = 0; i < whList.length; i++) {
       if(whList[i]){
-        proms.push(whList[i].send(content)
+        proms.push(whList[i].send(content())
         .catch(() => {
           delete whList[i];
         }));
@@ -34,7 +34,7 @@ class DroneManager {
     await Promise.all(proms);
   }
 
-  dronestrike(gid: string, app: Application, content: string, cid: string): void {
+  dronestrike(gid: string, cid: string, app: Application, content: () => string | MessageEmbed): void {
     if(!this.hasDronestrike(gid)) {
       this.ongoing[gid] = {
         prom: new Promise(resolve => {
@@ -113,7 +113,7 @@ export class DronestrikeCmd extends Command {
       if(this.manager.hasDronestrike(gid)) {
         return "There is already a dronestrike ongoing!";
       } else {
-        this.manager.dronestrike(gid, ctx.hostApp, message, ctx.message.channel.id);
+        this.manager.dronestrike(gid, ctx.message.channel.id, ctx.hostApp, () => message);
         return "Dronestrike authorized.";
       }
     }

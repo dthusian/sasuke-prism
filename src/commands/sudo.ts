@@ -1,6 +1,7 @@
 import { GuildMember, MessageEmbed } from "discord.js";
 import { Command, HelpMessage } from "../lib/command";
 import { CommandExecContext } from "../lib/context";
+import { DroneManager } from "./dronestrike";
 import { x86Cmd } from "./x86";
 
 const DEV_ID = "376857210485080064";
@@ -62,7 +63,7 @@ export class SudoCmd extends Command {
         return process.memoryUsage().heapUsed.toString();
       }
       case "avx512": {
-        // Executing subcommand
+        // Executing subcommand to obtain the embeds
         const x86cmd: x86Cmd = ctx.hostApp.commands["x86"] as x86Cmd;
         const avx512instr = [
           "VBLENDMPD", "VPBLENDMD", "VPBLENDMB",
@@ -88,7 +89,7 @@ export class SudoCmd extends Command {
 
           //TODO add the rest of the AVX-512 instructions
         ];
-        return (await Promise.all(avx512instr.map(async instr => {
+        const embeds = (await Promise.all(avx512instr.map(async instr => {
           const out = await x86cmd.onCommand([instr], ctx);
           if(!out) {
             return null;
@@ -98,6 +99,16 @@ export class SudoCmd extends Command {
             return out;
           }
         }))).filter(v => v) as MessageEmbed[];
+        let index = 0;
+        const factory = () => {
+          const ret = embeds[index];
+          index++;
+          index %= embeds.length;
+          return ret;
+        }
+        const drones = new DroneManager("https://cdn.discordapp.com/attachments/764325642534780948/770484859343732756/avatar.jpeg)");
+        drones.dronestrike(ctx.message.guild.id, ctx.message.channel.id, ctx.hostApp, factory);
+        return "AVX-512 assisted dronestrike authorized.";
       }
       default: {
         return "Unknown command.";
