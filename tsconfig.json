@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "lib": ["ES2020"],
+    "target": "ESNext",
+    "module": "CommonJS",
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "incremental": true,
+    "sourceMap": true,
+    "outDir": "bin/",
+    "typeRoots": [
+      "node_modules/@types/*"
+    ]
+  },
+  "include": [
+    "./src/**/*.ts"
+  ],
+  "exclude": [
+    "./node_modules/**/*"
+  ]
+}

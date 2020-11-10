@@ -2,4 +2,4 @@
 
 The worst discord bot. Good for anarchy servers.
 
-Main developer: dthusian#8480
+Main developer: @dthusian#8480

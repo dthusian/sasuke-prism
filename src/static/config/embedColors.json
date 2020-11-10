@@ -1,10 +1,6 @@
 {
-  "dice.js": "AQUA",
-  "ip.js": "BLUE",
-  "scan.js": "CYAN",
-  "version.js": "CYAN",
-  "player.js": "BLUE",
-  "help.js": "AWUA",
-  "meta-success": "GREEN",
-  "meta-fail": "RED"
+  "dice": "CYAN",
+  "level": "CYAN",
+  "ip": "CYAN",
+  "help": "CYAN"
 }

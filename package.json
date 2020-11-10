@@ -1,21 +1,28 @@
 {
-  "name": "discordbot",
+  "name": "sasuke-prism",
   "version": "2.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "./bin/index.js",
   "dependencies": {
     "discord.js": "^12.2.0",
     "form-data": "^3.0.0",
+    "fs-extra": "^9.0.1",
     "mongodb": "^3.6.0",
-    "node-fetch": "^2.6.0"
+    "node-fetch": "^2.6.1",
+    "typescript": "^4.0.5"
   },
   "devDependencies": {
-    "eslint": "^7.7.0"
+    "@types/mongodb": "^3.5.31",
+    "@types/node-fetch": "^2.5.7",
+    "@types/ws": "^7.2.9",
+    "@typescript-eslint/eslint-plugin": "^4.1.0",
+    "@typescript-eslint/parser": "^4.1.0",
+    "eslint": "^7.8.1"
   },
   "scripts": {
-    "test": "./node_modules/.bin/eslint ./src/injectors/**/*.js",
-    "build": "echo \"Nothing to build (codebase is JS)\""
+    "test": "npx eslint . --ext .ts",
+    "build": "node --unhandled-rejections=strict build.js"
   },
-  "author": "",
+  "author": "dthusian",
   "license": "MIT"
 }

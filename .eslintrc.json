@@ -1,26 +1,35 @@
 {
+  "root": true,
   "env": {
     "commonjs": true,
     "es2020": true,
     "node": true
   },
-  "extends": "eslint:recommended",
-  "parserOptions": {
-    "ecmaVersion": 11
-  },
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended"
+  ],
+  "plugins": [
+    "@typescript-eslint"
+  ],
+  "parser": "@typescript-eslint/parser",
   "rules": {
     "no-debugger": "off",
     "no-loss-of-precision": "error",
     "no-template-curly-in-string": "error",
     "no-unreachable-loop": "error",
     "eqeqeq": "error",
+    "no-empty-function": "off",
     "no-eval": "error",
+    "no-explicit-empty": "off",
     "no-extend-native": "error",
     "no-implied-eval": "error",
     "no-loop-func": "error",
     "no-new-wrappers": "error",
     "no-proto": "error",
     "no-throw-literal": "error",
+    "prefer-const": "warn",
+    "prefer-arrow-callback": "error",
     "strict": ["error", "global"]
   }
 }
