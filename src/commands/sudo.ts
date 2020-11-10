@@ -85,9 +85,43 @@ export class SudoCmd extends Command {
           "VCVTPS2QQ", "VCVTPS2UQQ", "VCVTTPS2QQ", "VCVTTPS2UQQ",
           "VCVTUDQ2PS", "VCVTUSI2PS", "VCVTUSI2SD", "VCVTUQQ2PS", "VCVTQQ2PD",
 
-          "VGETEXPPD", "VGETEXPSD", "VGETMANTPD", "VGETMANTSD", "VFIXUPIMMPD", "VFIXUPIMMSD"
+          "VGETEXPPD", "VGETEXPSD", "VGETMANTPD", "VGETMANTSD", "VFIXUPIMMPD", "VFIXUPIMMSD",
 
-          //TODO add the rest of the AVX-512 instructions
+          "VRCP14PD", "VRCP14SD", "VRNDSCALEPS", "VRNDSCALESS", "VRSQRT14PD", "VRSQRT14SD",
+          "VSCALEFPS", "VSCALEFSS",
+          
+          "VPBROADCASTB", "VPBROADCASTD",
+          
+          "VALIGND", "VDBPSADBW", "VPABSQ", "VPMAXSQ", "VPMINSQ", "VPROLD", "VPROLQ", "VPRORD", "VPRORQ",
+          "VPSCATTERDD", "VPSCATTERQD", "VSCATTERDPS", "VSCATTERQPS",
+
+          "VPCONFLICTD", "VPLZCNTD", "VPBROADCASTMB2Q",
+
+          "VEXP2PD", "VRCP28PD", "VRCP28SD", "VRSQRT28PD", "VRSQRT28SD",
+
+          "VGATHERPF0DPS", "VGATHERPF1DPS", "VSCATTERPF0DPS", "VSCATTERPF1DPS",
+
+          "V4FMADDPS", "V4FNMADDPS", "VP4DPWSSD", "VP4DPWSSDS",
+
+          "VFPCLASSPS", "VFPCLASSSS", "VRANGEPS", "VRANGESS", "VREDUCEPS", "VREDUCESS",
+          
+          "VPMOVM2D", "VPMOVM2B", "VPMOVD2M", "VPMOVB2M", "VPMULLQ",
+
+          "VPCOMPRESSB", "VPEXPANDB", "VPSHLD", "VPSHLDV", "VPSHRD", "VPSHRDV",
+
+          "VPDPBUSD", "VPDPBUSDS", "VPDPWSSD", "VPDPWSSDS",
+          
+          "VPMADD52LUQ", "VPMADD52HUQ",
+          
+          "VPOPCNTD", "VPOPCNTB", "VPSHUFBITQMB",
+
+          "VP2INTERSECTD",
+
+          "VGF2P8AFFINEINVQB", "VGF2P8AFFINEQB", "VGF2P8MULB",
+
+          "VPCLMULQDQ", "VAESDEC", "VAESDECLAST", "VAESENC", "VAESENCLAST",
+
+          "VCVTNE2PS2BF16", "VCVTNEPS2BF16", "VDPBF16PS"
         ];
         const embeds = (await Promise.all(avx512instr.map(async instr => {
           const out = await x86cmd.onCommand([instr], ctx);

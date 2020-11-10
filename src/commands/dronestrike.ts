@@ -58,7 +58,7 @@ export class DroneManager {
             const fullhooklist = hooks.flat();
             const interval = setInterval(() => {
               this.singleHit(fullhooklist, content);
-            }, 2000);
+            }, 7000);
             setTimeout(endStrike, 1000000);
             function endStrike() {
               clearInterval(interval);
