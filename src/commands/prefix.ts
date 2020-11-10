@@ -19,7 +19,7 @@ export class PrefixCmd extends Command {
     if(!ctx.message.guild) return null;
     let pre = args[0];
     if(args.length > 1) pre += " ";
-    ctx.hostApp.db.updateEntry<GuildDBEntry>("guilds", ctx.message.guild.id, { $set: { prefix: pre } });
+    ctx.hostApp.db.updateEntry("guilds", ctx.message.guild.id, { $set: { prefix: pre } });
     const embed = new MessageEmbed();
     embed.setTitle("Success");
     embed.setDescription("Prefix set to: `" + pre + "`");

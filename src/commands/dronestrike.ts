@@ -1,12 +1,13 @@
 import { TextChannel, Webhook } from "discord.js";
 import { Application } from "../lib/app";
 import { Command, HelpMessage } from "../lib/command";
-import { CommandExecContext } from "../lib/context";
+import { CommandExecContext, LoadExecContext } from "../lib/context";
 
 const DISCORD_MAX_WEBHOOKS = 10;
 
 class DroneManager {
   droneFactory = 10;
+  attackheli: string;
   makeDrone(): number {
     return this.droneFactory++;
   }
@@ -15,8 +16,9 @@ class DroneManager {
     [ gid: string ]: { prom: Promise<void>, res: () => void, bots: number, fired: number }
   };
 
-  constructor() {
+  constructor(attackheli: string) {
     this.ongoing = {};
+    this.attackheli = attackheli;
   }
 
   async singleHit(whList: Webhook[], content: string): Promise<void> {
@@ -46,7 +48,7 @@ class DroneManager {
               const hooks = (await v.fetchWebhooks()).array();
               for(let i = hooks.length; i < DISCORD_MAX_WEBHOOKS; i++) {
                 hooks.push(await v.createWebhook("Attack Helicopter " + this.makeDrone(), {
-                  avatar: (await app.config.loadFile("attack-heli.txt")).toString()
+                  avatar: this.attackheli
                 }));
               }
               return hooks;
@@ -80,7 +82,11 @@ export class DronestrikeCmd extends Command {
   manager: DroneManager;
   constructor() {
     super();
-    this.manager = new DroneManager();
+  }
+  async load(ctx: LoadExecContext): Promise<void> {
+    const helicopter = await ctx.hostApp.config.loadFile("attack-heli.txt");
+    if(helicopter === null) throw new Error("Missing asset: attack-heli.txt");
+    this.manager = new DroneManager(helicopter.toString());
   }
   getCommandString(): string[] {
     return ["dronestrike", "ds"];

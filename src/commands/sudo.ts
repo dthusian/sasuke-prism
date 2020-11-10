@@ -18,7 +18,7 @@ export class SudoCmd extends Command {
         "ban <user>",
         "gcstat"],
       example: [
-        "ban <@!616754792965865495>",
+        "ban <@!155149108183695360>",
         "gcstat"],
       message: "Executes a command as super-user. This, of course, requires administrator. There are only 2 commands that work in super-user mode."
     };
@@ -51,7 +51,7 @@ export class SudoCmd extends Command {
               return `Couldn't ban ${v.displayName}: An error occurred`;
             }
           } else {
-            return `Couldn't ban ${v.displayColor}: Not enough perms`;
+            return `Couldn't ban ${v.displayName}: Not enough perms`;
           }
         });
         return await Promise.all(bans);

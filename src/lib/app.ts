@@ -5,7 +5,7 @@ import { Behavior } from "./behavior";
 import { Command, CommandReturnType } from "./command";
 import { ConfigManager } from "./config";
 import { CommandExecContext, LoadExecContext } from "./context";
-import { CachedDatabase, DBConfig, GuildDBEntry } from "./db";
+import { CachedDatabase, DBConfig } from "./db";
 
 // CommandReturnType is such a dumpster fire of type unions
 async function resolveAndSendEmbeds(channel: TextChannel | DMChannel | NewsChannel, ret: CommandReturnType) {
@@ -53,7 +53,7 @@ export class Application {
       if(!(msg.guild && !msg.author.bot && msg.content)) return;
 
       // Check if it's a valid command
-      const gconf = await this.db.getEntry<GuildDBEntry>("guilds", msg.guild.id);
+      const gconf = await this.db.getEntry("guilds", msg.guild.id);
       if(!msg.content.startsWith(gconf.prefix)) return;
       const strippedMsg = msg.content.substring(gconf.prefix.length);
       const args = strippedMsg.split(" ");
@@ -72,6 +72,7 @@ export class Application {
 
   async registerCommand(cmd: Command): Promise<void> {
     cmd.getCommandString().forEach(v => this.commands[v] = cmd);
+    await cmd.load(new LoadExecContext(this));
   }
 
   async addBehavior(behavior: Behavior): Promise<void> {

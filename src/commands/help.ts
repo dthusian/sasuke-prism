@@ -1,4 +1,5 @@
 import { MessageEmbed } from "discord.js";
+import { makeGeneralHelpEmbed } from "../behavior/version";
 import { Command, HelpMessage } from "../lib/command";
 import { CommandExecContext } from "../lib/context";
 
@@ -15,13 +16,7 @@ export class HelpCmd extends Command {
   }
   async onCommand(args: string[], ctx: CommandExecContext): Promise<MessageEmbed | null> {
     if(!args[0]) {
-      const generalHelpEmbed = new MessageEmbed();
-      generalHelpEmbed.setTitle("sasuke prism v" + ctx.hostApp.getVersion());
-      generalHelpEmbed.setDescription("the worst discord bot");
-      generalHelpEmbed.setColor(await ctx.hostApp.config.loadColor("help"));
-      generalHelpEmbed.addField("General Commands", "!! TODO !!");
-      generalHelpEmbed.setFooter("Made by dthusian#8480");
-      return generalHelpEmbed;
+      return makeGeneralHelpEmbed(ctx.hostApp);
     } else {
       const helpMsg = ctx.hostApp.commands[args[0]].getHelpMessage();
       if(!helpMsg) return null;
