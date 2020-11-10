@@ -39,12 +39,10 @@ function sanitizeGuildEntry(entry: DBEntry, id: string): GuildDBEntry {
     version: 1,
     prefix: "+-"
   };
+  if(!entry) return newent;
   switch(entry.version) {
     case 1: {
       return entry as GuildDBEntry; // Current version
-    }
-    case undefined: { // Null entry
-      return newent;
     }
     default: {
       throw new Error("Unknown data format");
@@ -62,12 +60,10 @@ function sanitizePlayerEntry(entry: DBEntry, id: string): PlayerDBEntry {
     },
     timers: {}
   };
+  if(!entry) return newent;
   switch(entry.version) {
     case 1: {
       return entry as PlayerDBEntry; // Current version
-    }
-    case undefined: { // Null entry
-      return newent;
     }
     default: {
       throw new Error("Unknown data format");
@@ -134,6 +130,8 @@ export class CachedDatabase {
       await collec.insertOne(entry as unknown as { _id: ObjectID });
       cache[id] = entry;
       return entry;
+    } else {
+      entry = sanitizerFunctions[colName](entry, id);
     }
     this.cache[colName][id] = entry;
     return entry;

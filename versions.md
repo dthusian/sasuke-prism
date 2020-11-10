@@ -1,7 +1,15 @@
+## v2.2.1
+
+First commit: 95d093d570e940e24d935667747da9a46e0c6620 (master)
+Last commit: TBD
+
+- Hotfix generating new database entries
+- Fix dronestriking code
+
 ## v2.2.0
 
 First commit: 0f8f56c5a16598d6208cd7955d097bd7b34aa6c6 (typescript)
-Last commit: TBD
+Last commit: 84bf9d2ec7888022c77a6c75720fce26c3a7a5c9 (master)
 
 - Everything rewritten in typescript
 - The bot actually has a prefix now (required for top.gg integration)
