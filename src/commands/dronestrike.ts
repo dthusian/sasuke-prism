@@ -1,4 +1,5 @@
 import { Guild, MessageEmbed, TextChannel, Webhook } from "discord.js";
+import { PassThrough } from "form-data";
 import { Application } from "../lib/app";
 import { Command, HelpMessage } from "../lib/command";
 import { CommandExecContext } from "../lib/context";
@@ -37,11 +38,13 @@ export class Dronestrike {
     const increFired = () => { fired++; };
     for(let i = 0; i < whList.length; i++) {
       if(whList[i]){
-        proms.push(whList[i].send(content())
-        .then(increFired)
-        .catch(() => {
-          delete whList[i];
-        }));
+        try {
+          proms.push(whList[i].send(content())
+          .then(increFired)
+          .catch(() => {
+            delete whList[i];
+          }));
+        } catch(e) { e; } // Swallow errors
       }
     }
     await Promise.all(proms);
@@ -62,9 +65,11 @@ export class Dronestrike {
         if(v instanceof TextChannel && !this.ignoreChannels.includes(v.id)) {
           const hooks = (await v.fetchWebhooks()).array();
           for(let i = hooks.length; i < DISCORD_MAX_WEBHOOKS; i++) {
-            hooks.push(await v.createWebhook("Attack Helicopter " + (globalDroneFactory++), {
-              avatar: this.avatar
-            }));
+            try {
+              hooks.push(await v.createWebhook("Attack Helicopter " + (globalDroneFactory++), {
+                avatar: this.avatar
+              }));
+            } catch(e) { e; } // Swallow errors
           }
           return hooks;
         }
