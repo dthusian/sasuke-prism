@@ -1,1 +1,0 @@
-{"title":"LAHF — Load Status Flags into AH Register","fields":[{"name":"Description","value":"This instruction executes as described above in compatibility mode and legacy mode. It is valid in 64-bit mode only if CPUID.80000001H:ECX.LAHF-SAHF[bit 0] = 1."}],"color":65535,"footer":{"text":"Thanks to Felix Cloutier for the online x86 reference"}}

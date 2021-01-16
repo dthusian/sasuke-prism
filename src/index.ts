@@ -9,7 +9,6 @@ import { UwUBanBehavior } from "./behavior/banuwu";
 import { DronestrikeCmd } from "./commands/dronestrike";
 import { PrefixCmd } from "./commands/prefix";
 import { SudoCmd } from "./commands/sudo";
-import { x86Cmd } from "./commands/x86";
 import { VersionBehavior } from "./behavior/version";
 
 async function main() {
@@ -22,7 +21,6 @@ async function main() {
   app.registerCommand(new DronestrikeCmd());
   app.registerCommand(new PrefixCmd());
   app.registerCommand(new SudoCmd());
-  app.registerCommand(new x86Cmd());
 
   app.addBehavior(new ActivityBehavior());
   app.addBehavior(new UwUBanBehavior());
