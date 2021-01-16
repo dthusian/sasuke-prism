@@ -16,7 +16,7 @@ export class HelpCmd extends Command {
   }
   async onCommand(args: string[], ctx: CommandExecContext): Promise<MessageEmbed | null> {
     if(!args[0]) {
-      return makeGeneralHelpEmbed(ctx.hostApp);
+      return makeGeneralHelpEmbed(ctx.hostApp, ctx.guildInfo._id);
     } else {
       const helpMsg = ctx.hostApp.commands[args[0]].getHelpMessage();
       if(!helpMsg) return null;
