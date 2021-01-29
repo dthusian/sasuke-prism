@@ -1,10 +1,16 @@
-## v2.2.1
+## v2.3.0
 
 First commit: 95d093d570e940e24d935667747da9a46e0c6620 (master)
 Last commit: TBD
 
 - Hotfix generating new database entries
 - Fix dronestriking code
+- Remove x86 reference (what was I thinking?)
+- Dronestrike are no longer AVX-512 accelerated
+  - Our server room turned into a space heater for a sec there
+- Fix issues with help command and pinging
+- Make leveling up actually possible
+- More features coming!
 
 ## v2.2.0
 

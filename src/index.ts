@@ -11,6 +11,7 @@ import { HelpCmd } from "./commands/help";
 import { VersionBehavior } from "./behavior/version";
 import { ActivityBehavior } from "./behavior/activity";
 import { UwUBanBehavior } from "./behavior/banuwu";
+import { PassivesBehavior } from "./behavior/passives";
 
 async function main() {
   const app = new Application();
@@ -26,6 +27,7 @@ async function main() {
 
   app.addBehavior(new ActivityBehavior());
   app.addBehavior(new UwUBanBehavior());
+  app.addBehavior(new PassivesBehavior());
   app.addBehavior(new VersionBehavior());
 
   await app.execute();

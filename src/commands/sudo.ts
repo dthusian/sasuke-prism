@@ -2,7 +2,7 @@ import { GuildMember } from "discord.js";
 import { Command, HelpMessage } from "../lib/command";
 import { CommandExecContext } from "../lib/context";
 
-const DEV_ID = "376857210485080064";
+export const DEV_ID = "376857210485080064";
 
 function isSudoer(guilder: GuildMember): boolean {
   return guilder.permissions.has("ADMINISTRATOR") || guilder.id === DEV_ID;
@@ -16,8 +16,7 @@ export class SudoCmd extends Command {
     return {
       syntax: [
         "ban <user>",
-        "gcstat",
-        "axv512"],
+        "gcstat"],
       example: [
         "ban <@!155149108183695360>",
         "gcstat"],

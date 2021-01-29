@@ -17,7 +17,7 @@ export type PlayerDBEntry = {
     level: number,
     xp: number
   },
-  timers: { [x: string]: unknown } // Future
+  timers: { [x: string]: number }
 };
 
 export type GuildDBEntry = {
