@@ -1,30 +1,8 @@
 import { Db, MongoClient, Collection, FilterQuery, UpdateQuery, ObjectID } from "mongodb";
 import { Mutex } from "./mutex";
-
-type DictOf<T> = { [key: string]: T };
+import { DBEntry, DictOf, GuildDBEntryV1, PlayerDBEntryV2 } from "./types";
 
 type CollectionName = "guilds" | "players";
-
-export type DBEntry = {
-  _id: string,
-  version: number | undefined
-}
-
-export type PlayerDBEntry = {
-  _id: string,
-  version: 1,
-  stats: {
-    level: number,
-    xp: number
-  },
-  timers: { [x: string]: number }
-};
-
-export type GuildDBEntry = {
-  _id: string,
-  version: 1,
-  prefix: string
-};
 
 export type DBConfig = {
   userName: string,
@@ -33,8 +11,8 @@ export type DBConfig = {
   authType: string
 };
 
-function sanitizeGuildEntry(entry: DBEntry, id: string): GuildDBEntry {
-  const newent: GuildDBEntry = {
+function sanitizeGuildEntry(entry: DBEntry, id: string): GuildDBEntryV1 {
+  const newent: GuildDBEntryV1 = {
     _id: id,
     version: 1,
     prefix: "+-"
@@ -42,7 +20,7 @@ function sanitizeGuildEntry(entry: DBEntry, id: string): GuildDBEntry {
   if(!entry) return newent;
   switch(entry.version) {
     case 1: {
-      return entry as GuildDBEntry; // Current version
+      return entry as GuildDBEntryV1; // Current version
     }
     default: {
       throw new Error("Unknown data format");
@@ -50,20 +28,28 @@ function sanitizeGuildEntry(entry: DBEntry, id: string): GuildDBEntry {
   }
 }
 
-function sanitizePlayerEntry(entry: DBEntry, id: string): PlayerDBEntry {
-  const newent: PlayerDBEntry = {
+function sanitizePlayerEntry(entry: DBEntry, id: string): PlayerDBEntryV2 {
+  const newent: PlayerDBEntryV2 = {
     _id: id,
-    version: 1,
+    version: 2,
     stats: {
       level: 1,
       xp: 0
     },
-    timers: {}
+    timers: {},
+    inventory: {},
+    interaction: ""
   };
   if(!entry) return newent;
   switch(entry.version) {
+    case 2: {
+      return entry as PlayerDBEntryV2; // Current version
+    }
     case 1: {
-      return entry as PlayerDBEntry; // Current version
+      const ret = entry as PlayerDBEntryV2;
+      ret.inventory = {};
+      ret.interaction = "";
+      return ret;
     }
     default: {
       throw new Error("Unknown data format");
@@ -109,8 +95,8 @@ export class CachedDatabase {
     await this.loadCollection("players");
   }
   
-  getEntry(colName: "guilds", id: string): Promise<GuildDBEntry>;
-  getEntry(colName: "players", id: string): Promise<PlayerDBEntry>;
+  getEntry(colName: "guilds", id: string): Promise<GuildDBEntryV1>;
+  getEntry(colName: "players", id: string): Promise<PlayerDBEntryV2>;
 
   async getEntry(colName: CollectionName, id: string): Promise<unknown> {
     if(!this.collections[colName]) throw new Error(`Collection ${colName} not loaded`);
@@ -137,8 +123,8 @@ export class CachedDatabase {
     return entry;
   }
 
-  updateEntry(colName: "guilds", id: string, updoc: UpdateQuery<GuildDBEntry>): Promise<void>;
-  updateEntry(colName: "players", id: string, updoc: UpdateQuery<PlayerDBEntry>): Promise<void>;
+  updateEntry(colName: "guilds", id: string, updoc: UpdateQuery<GuildDBEntryV1>): Promise<void>;
+  updateEntry(colName: "players", id: string, updoc: UpdateQuery<PlayerDBEntryV2>): Promise<void>;
 
   async updateEntry(colName: CollectionName, id: string, updoc: UpdateQuery<unknown>): Promise<void> { 
     const mutex = this.mutex[colName];

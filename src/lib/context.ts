@@ -1,6 +1,6 @@
 import { Message } from "discord.js";
 import { Application } from "./app";
-import { GuildDBEntry, PlayerDBEntry } from "./db";
+import { GuildDBEntryV1, PlayerDBEntry } from "./db";
 
 export class LoadExecContext {
   hostApp: Application;
@@ -12,8 +12,8 @@ export class LoadExecContext {
 export class CommandExecContext {
   hostApp: Application;
   message: Message;
-  guildInfo: GuildDBEntry;
-  constructor(app: Application, msg: Message, guild: GuildDBEntry) {
+  guildInfo: GuildDBEntryV1;
+  constructor(app: Application, msg: Message, guild: GuildDBEntryV1) {
     this.hostApp = app;
     this.message = msg;
     this.guildInfo = guild;
