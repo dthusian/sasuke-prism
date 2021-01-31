@@ -37,8 +37,8 @@ function sanitizePlayerEntry(entry: DBEntry, id: string): PlayerDBEntryV2 {
       xp: 0
     },
     timers: {},
-    inventory: {},
-    interaction: ""
+    loadout: {},
+    inventory: []
   };
   if(!entry) return newent;
   switch(entry.version) {
@@ -47,8 +47,7 @@ function sanitizePlayerEntry(entry: DBEntry, id: string): PlayerDBEntryV2 {
     }
     case 1: {
       const ret = entry as PlayerDBEntryV2;
-      ret.inventory = {};
-      ret.interaction = "";
+      ret.inventory = [];
       return ret;
     }
     default: {

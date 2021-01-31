@@ -5,7 +5,7 @@ export type DBEntry = {
   version: number | undefined
 }
 
-export type ItemSlot = "armor" | "mainhand" | "offhand1" | "offhand2" | "offhand3" | "inv0" | "inv1" | "inv2" | "inv3" | "inv4" | "inv5" | "inv6" | "inv7";
+export type ItemSlot = "armor" | "boots" | "primaryHand" | "secondaryHand" | "offhandLeft" | "offhandRight";
 
 export type ItemV1 = {
   item: string,
@@ -21,8 +21,8 @@ export type PlayerDBEntryV2 = {
     xp: number
   },
   timers: { [x: string]: number },
-  inventory: { [x: string]: ItemV1 },
-  interaction: string
+  loadout: { [x: string]: ItemV1 }
+  inventory: ItemV1[]
 };
 
 export type PlayerDBEntryV1 = {

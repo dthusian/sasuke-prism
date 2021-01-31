@@ -1,7 +1,7 @@
 import { MessageEmbed } from "discord.js";
 import { Command, HelpMessage } from "../lib/command";
 import { CommandExecContext } from "../lib/context";
-import { getReqdExp, getTitleFromLevel } from "../lib/game/level";
+import { getReqdExp, getTitleFromLevel } from "../game/level";
 
 export class LevelCmd extends Command {
   getCommandString(): string[] {
