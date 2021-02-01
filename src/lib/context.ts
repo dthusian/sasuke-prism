@@ -1,6 +1,6 @@
 import { Message } from "discord.js";
 import { Application } from "./app";
-import { GuildDBEntryV1, PlayerDBEntry } from "./db";
+import { GuildDBEntryV1, PlayerDBEntryV2 } from "./types";
 
 export class LoadExecContext {
   hostApp: Application;
@@ -18,7 +18,7 @@ export class CommandExecContext {
     this.message = msg;
     this.guildInfo = guild;
   }
-  async getPlayerData(): Promise<PlayerDBEntry> {
+  async getPlayerData(): Promise<PlayerDBEntryV2> {
     return await this.hostApp.db.getEntry("players", this.message.author.id);
   }
 }

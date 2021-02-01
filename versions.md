@@ -1,3 +1,8 @@
+## v2.4.0
+
+- PagedDatabase
+  - We need this. The current database is cumbersome.
+
 ## v2.3.0
 
 First commit: 95d093d570e940e24d935667747da9a46e0c6620 (master)
@@ -10,6 +15,7 @@ Last commit: TBD
   - Our server room turned into a space heater for a sec there
 - Fix issues with help command and pinging
 - Make leveling up actually possible
+- Errors in command handlers no longer crash the process
 - More features coming!
 
 ## v2.2.0

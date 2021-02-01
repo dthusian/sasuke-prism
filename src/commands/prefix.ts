@@ -1,7 +1,7 @@
 import { MessageEmbed } from "discord.js";
 import { Command, HelpMessage } from "../lib/command";
 import { CommandExecContext } from "../lib/context";
-import { GuildDBEntryV1 } from "../lib/db";
+import { GuildDBEntryV1 } from "../lib/types";
 
 export class PrefixCmd extends Command {
   getCommandString(): string[] {

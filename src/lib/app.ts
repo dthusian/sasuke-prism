@@ -6,6 +6,7 @@ import { Command, CommandReturnType } from "./command";
 import { ConfigManager } from "./config";
 import { CommandExecContext, LoadExecContext } from "./context";
 import { CachedDatabase, DBConfig } from "./db";
+import { GameManager } from "../game/manager";
 
 // CommandReturnType is such a dumpster fire of type unions
 async function resolveAndSendEmbeds(channel: TextChannel | DMChannel | NewsChannel, ret: CommandReturnType) {
@@ -33,6 +34,7 @@ export class Application {
   bot: Client;
   config: ConfigManager;
   db: CachedDatabase;
+  game: GameManager;
   logs: Logger;
   commands: { [ id: string]: Command };
 
@@ -41,10 +43,12 @@ export class Application {
     this.config = new ConfigManager();
     this.logs = Logger.toStdout();
     this.commands = {};
+    this.game = new GameManager(this);
     this.logs.logInfo("Bot initialize");
   }
 
   async load(): Promise<void> {
+    await this.game.load();
     this.db = new CachedDatabase(await this.config.load("mongodb") as DBConfig, await this.config.loadToken("mongodb"));
     await this.db.connect();
     this.logs.logInfo("Connected to MongoDB [" + this.db.config.host + "]");
@@ -62,8 +66,19 @@ export class Application {
 
       // Run the command
       const cmd = this.commands[commandName];
-      const embed = cmd.onCommand(args.slice(1), new CommandExecContext(this, msg, gconf));
-      resolveAndSendEmbeds(msg.channel, embed);
+      try {
+        const embed = cmd.onCommand(args.slice(1), new CommandExecContext(this, msg, gconf));
+        await resolveAndSendEmbeds(msg.channel, embed);
+      } catch(err: unknown) {
+        this.logs.logError("Unhandled exception in command handler");
+        if(err instanceof Error) {
+          this.logs.logError(err.name + ": " + err.message);
+          if(err.stack)
+            this.logs.logError(err.stack);
+        } else {
+          this.logs.logError("An error object was not found");
+        }
+      } 
     });
     this.bot.on("ready", () => {
       this.logs.logInfo("Connected to Discord");
@@ -85,6 +100,6 @@ export class Application {
   }
 
   getVersion(): string {
-    return "2.2";
+    return "2.3";
   }
 }

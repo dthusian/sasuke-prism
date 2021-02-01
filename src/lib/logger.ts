@@ -17,10 +17,10 @@ export class Logger {
   static toNull(): Logger {
     return new Logger(() => 0);
   }
-  _rawLog(line: string, logtype: string): void {
+  private _rawLog(line: string, logtype: string): void {
     this.outputStream(`[${(new Date()).toISOString()} ${logtype}]: ${line}`);
   }
-  _rawLogMulti(message: string, logtype: string): void {
+  private _rawLogMulti(message: string, logtype: string): void {
     message.split("\n").forEach(v => this._rawLog(v, logtype));
   }
   logDebug(message: string): void {
@@ -31,6 +31,9 @@ export class Logger {
   }
   logWarning(message: string): void {
     this._rawLogMulti(message, "INFO");
+  }
+  logError(message: string): void {
+    this._rawLogMulti(message, "ERROR");
   }
   logFatal(message: string, exitcode = 1): void {
     this._rawLogMulti(message, "ERROR");

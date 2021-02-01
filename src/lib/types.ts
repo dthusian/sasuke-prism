@@ -8,7 +8,7 @@ export type DBEntry = {
 export type ItemSlot = "armor" | "boots" | "primaryHand" | "secondaryHand" | "offhandLeft" | "offhandRight";
 
 export type ItemV1 = {
-  item: string,
+  id: string,
   qty: number,
   extra: unknown
 };
