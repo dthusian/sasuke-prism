@@ -1,13 +1,10 @@
 # This is the TODO File. Things here might appear in future versions of the bot.
 
-- Add a level-up system
-  - Fix levelling code to be type-safe
-- Switch codebase to typescript
-  - Add music bot functionality
-    - play, p
-    - pause
-    - queue, q
-    - skip
-    - skipvote
-    - disconnect, die
-- Add scan file behavior back
+- Add music bot functionality
+  - play, p
+  - pause
+  - queue, q
+  - skip
+  - skipvote
+  - disconnect, die
+- Switch database to PagedDatabase
