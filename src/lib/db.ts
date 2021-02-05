@@ -1,5 +1,6 @@
 import { Db, MongoClient, Collection, FilterQuery, UpdateQuery, ObjectID } from "mongodb";
 import { Mutex } from "./mutex";
+import { TemporaryStorage } from "./temporary";
 import { DBEntry, DictOf, GuildDBEntryV1, PlayerDBEntryV2 } from "./types";
 
 type CollectionName = "guilds" | "players";
@@ -139,4 +140,38 @@ export class CachedDatabase {
     this.cache[colName] = {};
     this.mutex[colName].release();
   }
+}
+
+export interface IDatabaseObjectConverter<T> {
+  fromJSON(json: unknown): T;
+  toJSON(obj: T): unknown;
+  newObject(): T;
+}
+
+export class PagedDatabase<T> {
+  cache: TemporaryStorage<T>;
+  collection: Collection;
+  converter: IDatabaseObjectConverter<T>;
+  timeout: number;
+
+  async getEntry(id: string): Promise<T> {
+    const maybeEntry = this.cache.getEntry(id);
+    if(maybeEntry) {
+      return maybeEntry;
+    }
+    const fromDb = await this.collection.findOne({ _id: id });
+    if(!fromDb) {
+      const newObj = this.converter.newObject();
+      this.cache.addEntry(id, newObj, this.timeout);
+      return newObj;
+    } else {
+      const obj = this.converter.fromJSON(fromDb);
+      this.cache.addEntry(id, obj, this.timeout);
+      return obj;
+    }
+  }
+}
+
+export class DatabaseManager {
+  
 }

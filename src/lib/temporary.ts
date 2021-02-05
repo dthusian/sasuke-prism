@@ -1,4 +1,4 @@
-export type FlushCallback<T> = (obj: T) => void;
+export type FlushCallback<T> = (obj: T) => Promise<void>;
 
 // internal
 class TempStorageEntry<T> {
@@ -6,16 +6,16 @@ class TempStorageEntry<T> {
   callback: FlushCallback<T>;
   object: T;
   constructor(that: TemporaryStorage<T>, id: string, obj: T, ms: number) {
-    this.timer = setTimeout((that2: TemporaryStorage<T>) => {
-      that2.entries[id].callback(that2.entries[id].object);
+    this.timer = setTimeout(async (that2: TemporaryStorage<T>) => {
+      await that2.entries[id].callback(that2.entries[id].object);
       delete that2.entries[id];
     }, ms, that);
     this.object = obj;
   }
   refresh(that: TemporaryStorage<T>, id: string, ms: number): void {
     clearTimeout(this.timer);
-    this.timer = setTimeout((that2: TemporaryStorage<T>) => {
-      that2.entries[id].callback(that2.entries[id].object);
+    this.timer = setTimeout(async (that2: TemporaryStorage<T>) => {
+      await that2.entries[id].callback(that2.entries[id].object);
       delete that2.entries[id];
     }, ms, that);
   }
