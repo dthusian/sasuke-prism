@@ -1,22 +1,30 @@
-export type FlushCallback<T> = (obj: T) => Promise<void>;
+export type FlushCallback<T> = (id: string, obj: T) => Promise<void>;
 
 // internal
 class TempStorageEntry<T> {
   timer: ReturnType<typeof setTimeout>;
-  callback: FlushCallback<T>;
+  callback: FlushCallback<T> | undefined;
   object: T;
   constructor(that: TemporaryStorage<T>, id: string, obj: T, ms: number) {
     this.timer = setTimeout(async (that2: TemporaryStorage<T>) => {
-      await that2.entries[id].callback(that2.entries[id].object);
-      delete that2.entries[id];
+      const entry = that2.entries[id];
+      if(entry.callback !== undefined) {
+        await entry.callback(id, entry.object);
+      } else {
+        delete that2.entries[id];
+      }
     }, ms, that);
     this.object = obj;
   }
   refresh(that: TemporaryStorage<T>, id: string, ms: number): void {
     clearTimeout(this.timer);
     this.timer = setTimeout(async (that2: TemporaryStorage<T>) => {
-      await that2.entries[id].callback(that2.entries[id].object);
-      delete that2.entries[id];
+      const entry = that2.entries[id];
+      if(entry.callback !== undefined) {
+        await entry.callback(id, entry.object);
+      } else {
+        delete that2.entries[id];
+      }
     }, ms, that);
   }
 }

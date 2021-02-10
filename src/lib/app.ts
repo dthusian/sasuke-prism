@@ -5,8 +5,9 @@ import { Behavior } from "./behavior";
 import { Command, CommandReturnType } from "./command";
 import { ConfigManager } from "./config";
 import { CommandExecContext, LoadExecContext } from "./context";
-import { CachedDatabase, DBConfig } from "./db";
+import { CachedDatabase, Database, DBConfig, PagedDatabase } from "./db";
 import { GameManager } from "../game/manager";
+import { GuildData, GuildDataCvtr } from "./types";
 
 // CommandReturnType is such a dumpster fire of type unions
 async function resolveAndSendEmbeds(channel: TextChannel | DMChannel | NewsChannel, ret: CommandReturnType) {
@@ -33,7 +34,8 @@ async function resolveAndSendEmbeds(channel: TextChannel | DMChannel | NewsChann
 export class Application {
   bot: Client;
   config: ConfigManager;
-  db: CachedDatabase;
+  db: Database;
+  guildDb: PagedDatabase<GuildData>;
   game: GameManager;
   logs: Logger;
   commands: { [ id: string]: Command };
@@ -49,15 +51,16 @@ export class Application {
 
   async load(): Promise<void> {
     await this.game.load();
-    this.db = new CachedDatabase(await this.config.load("mongodb") as DBConfig, await this.config.loadToken("mongodb"));
-    await this.db.connect();
+    this.db = new Database(await this.config.load("mongodb") as DBConfig, await this.config.loadToken("mongodb"));
+    await this.db.load();
+    this.guildDb = await this.db.loadDataset("guilds", new GuildDataCvtr());
     this.logs.logInfo("Connected to MongoDB [" + this.db.config.host + "]");
     this.bot.on("message", async msg => {
       // Validate message
       if(!(msg.guild && !msg.author.bot && msg.content)) return;
 
       // Check if it's a valid command
-      const gconf = await this.db.getEntry("guilds", msg.guild.id);
+      const gconf = await this.guildDb.getEntry(msg.guild.id);
       if(!msg.content.startsWith(gconf.prefix)) return;
       const strippedMsg = msg.content.substring(gconf.prefix.length);
       const args = strippedMsg.split(" ");
