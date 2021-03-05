@@ -5,9 +5,9 @@ import { Behavior } from "./behavior";
 import { Command, CommandReturnType } from "./command";
 import { ConfigManager } from "./config";
 import { CommandExecContext, LoadExecContext } from "./context";
-import { CachedDatabase, Database, DBConfig, PagedDatabase } from "./db";
+import { Database, DBConfig, PagedDatabase } from "./db";
 import { GameManager } from "../game/manager";
-import { GuildData, GuildDataCvtr } from "./types";
+import { GuildData, GuildDataCvtr, PlayerData, PlayerDataCvtr } from "./types";
 
 // CommandReturnType is such a dumpster fire of type unions
 async function resolveAndSendEmbeds(channel: TextChannel | DMChannel | NewsChannel, ret: CommandReturnType) {
@@ -36,6 +36,7 @@ export class Application {
   config: ConfigManager;
   db: Database;
   guildDb: PagedDatabase<GuildData>;
+  playerDb: PagedDatabase<PlayerData>;
   game: GameManager;
   logs: Logger;
   commands: { [ id: string]: Command };
@@ -54,6 +55,7 @@ export class Application {
     this.db = new Database(await this.config.load("mongodb") as DBConfig, await this.config.loadToken("mongodb"));
     await this.db.load();
     this.guildDb = await this.db.loadDataset("guilds", new GuildDataCvtr());
+    this.playerDb = await this.db.loadDataset("players", new PlayerDataCvtr());
     this.logs.logInfo("Connected to MongoDB [" + this.db.config.host + "]");
     this.bot.on("message", async msg => {
       // Validate message

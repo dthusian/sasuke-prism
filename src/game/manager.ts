@@ -8,6 +8,6 @@ export class GameManager {
   }
 
   async load(): Promise<void> {
-    await this.items.load("test");
+    await this.items.loadMaterial("test");
   }
 }

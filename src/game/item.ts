@@ -1,50 +1,57 @@
 import { ConfigManager } from "../lib/config";
 
-export type ItemJSON = {
+// *JSON = Configuration json
+// *Data = Database data
+
+export type MaterialJSON = {
+  id: string;
   name: string,
   description: string,
   flags: string[]
 }
 
-export class ItemType {
-  name: string;
-  description: string;
-  flags: string[];
-  id: string;
+export type ToolClass = "null" | "gun" | "melee" | "armor";
 
-  constructor() {
-    this.name = "<null>";
-    this.description = "No description";
-    this.flags = [];
-  }
-
-  hasFlag(flag: string): boolean {
-    return this.flags.includes(flag);
-  }
+export type ToolJSON = {
+  name: string,
+  description: string,
+  class: ToolClass,
+  allowedRarity: number[],
+  recipe: { [x: string]: number }
 }
 
-function itemFromJSON(id: string, json: ItemJSON): ItemType {
-  const ret = new ItemType();
-  ret.id = id;
-  ret.name = json.name;
-  ret.description = json.description;
-  ret.flags = json.flags || [];
-  return ret;
+export type MaterialData = {
+  id: string,
+  amount: number
+}
+
+export type ToolData = {
+  id: string,
+  rarity: number
 }
 
 export class ItemRegistry {
   config: ConfigManager;
-  reg: { [x: string]: ItemType }
+  materials: { [x: string]: MaterialJSON };
+  tools: { [x: string]: ToolJSON };
   constructor(config: ConfigManager) {
-    this.reg = {};
+    this.materials = {};
     this.config = config;
   }
-  async load(id: string): Promise<void> {
-    const buf = await this.config.loadFile("items/" + id + ".json");
+  async loadMaterial(id: string): Promise<void> {
+    const buf = await this.config.loadFile("items/material/" + id + ".json");
     if(!buf) {
       throw new Error("Item JSON not found");
     }
-    const json = JSON.parse(buf.toString()) as ItemJSON;
-    this.reg[id] = itemFromJSON(id, json);
+    const json = JSON.parse(buf.toString()) as MaterialJSON;
+    this.materials[id] = json;
+  }
+  async loadTools(id: string): Promise<void> {
+    const buf = await this.config.loadFile("items/tool/" + id + ".json");
+    if(!buf) {
+      throw new Error("Item JSON not found");
+    }
+    const json = JSON.parse(buf.toString()) as ToolJSON;
+    this.tools[id] = json;
   }
 }

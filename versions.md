@@ -11,6 +11,7 @@ Last commit: TBD
 - Fix issues with help command and pinging
 - Make leveling up actually possible
 - Errors in command handlers no longer crash the process
+- Add item system (still WIP)
 - More features coming!
 
 ## v2.2.0

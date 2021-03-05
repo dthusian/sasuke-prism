@@ -1,6 +1,5 @@
 import { GuildMember } from "discord.js";
-import { ItemType } from "../game/item";
-import { addItemToPlayer } from "../game/itemdb";
+import { addMaterialToPlayer } from "../game/itemdb";
 import { Command, HelpMessage } from "../lib/command";
 import { CommandExecContext } from "../lib/context";
 
@@ -62,7 +61,7 @@ export class SudoCmd extends Command {
         return process.memoryUsage().heapUsed.toString();
       }
       case "debugitem": {
-        addItemToPlayer(ctx.hostApp.db, DEV_ID, ctx.hostApp.game.items.reg["test"], 1);
+        addMaterialToPlayer(ctx.hostApp.playerDb, DEV_ID, "test", 1);
         return null;
       }
       default: {

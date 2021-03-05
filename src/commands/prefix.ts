@@ -1,7 +1,6 @@
 import { MessageEmbed } from "discord.js";
 import { Command, HelpMessage } from "../lib/command";
 import { CommandExecContext } from "../lib/context";
-import { GuildDBEntryV1 } from "../lib/types";
 
 export class PrefixCmd extends Command {
   getCommandString(): string[] {
@@ -19,7 +18,7 @@ export class PrefixCmd extends Command {
     if(!ctx.message.guild) return null;
     let pre = args[0];
     if(args.length > 1) pre += " ";
-    ctx.hostApp.db.updateEntry("guilds", ctx.message.guild.id, { $set: { prefix: pre } });
+    (await ctx.hostApp.guildDb.getEntry(ctx.message.guild.id)).prefix = pre;
     const embed = new MessageEmbed();
     embed.setTitle("Success");
     embed.setDescription("Prefix set to: `" + pre + "`");
