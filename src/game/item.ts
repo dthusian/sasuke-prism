@@ -4,7 +4,6 @@ import { ConfigManager } from "../lib/config";
 // *Data = Database data
 
 export type MaterialJSON = {
-  id: string;
   name: string,
   description: string,
   flags: string[]
@@ -36,6 +35,7 @@ export class ItemRegistry {
   tools: { [x: string]: ToolJSON };
   constructor(config: ConfigManager) {
     this.materials = {};
+    this.tools = {};
     this.config = config;
   }
   async loadMaterial(id: string): Promise<void> {
@@ -46,7 +46,7 @@ export class ItemRegistry {
     const json = JSON.parse(buf.toString()) as MaterialJSON;
     this.materials[id] = json;
   }
-  async loadTools(id: string): Promise<void> {
+  async loadTool(id: string): Promise<void> {
     const buf = await this.config.loadFile("items/tool/" + id + ".json");
     if(!buf) {
       throw new Error("Item JSON not found");

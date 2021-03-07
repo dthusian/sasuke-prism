@@ -1,6 +1,7 @@
 import { Behavior } from "../lib/behavior";
 import { LoadExecContext } from "../lib/context";
 import { getReqdExp } from "../game/level";
+import { getPlayerFieldId } from "../lib/types";
 
 const xpPassiveInterval = 1000 * 60 * 5; // 5 Minutes
 const xpPassiveIncreaseAmount = 5;
@@ -11,7 +12,8 @@ export class PassivesBehavior extends Behavior {
     const db = ctx.hostApp.playerDb;
     bot.on("message", async msg => {
       if(msg.author.bot) return;
-      const pl = await db.getEntry(msg.author.id);
+      if(!msg.guild) return;
+      const pl = await db.getEntry(getPlayerFieldId(msg.guild.id, msg.author.id));
       if(!pl.timers["passive"]) {
         pl.timers["passive"] = 0;
       }

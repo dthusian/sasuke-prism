@@ -29,6 +29,7 @@ export class PagedDatabase<T> {
   async getEntry(id: string): Promise<T> {
     const maybeEntry = this.cache.getEntry(id);
     if(maybeEntry) {
+      this.cache.refreshEntry(id, this.timeout);
       return maybeEntry;
     }
     const fromDb = await this.collection.findOne({ _id: id });

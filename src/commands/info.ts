@@ -24,7 +24,7 @@ export class InfoCmd extends Command {
       const mat = items.materials[id];
       embed.setTitle(mat.name);
       embed.addField("Description", mat.description);
-      embed.setFooter(mat.id);
+      embed.setFooter(id);
       return embed;
     } else if(items.tools[id]) {
       const embed = new MessageEmbed();

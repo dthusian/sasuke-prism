@@ -5,7 +5,7 @@ import { LoadExecContext } from "../lib/context";
 import { DEV_ID } from "../commands/sudo";
 
 export async function makeGeneralHelpEmbed(hostApp: Application, gid: string): Promise<MessageEmbed> {
-  const prefix = (await hostApp.db.getEntry("guilds", gid)).prefix;
+  const prefix = (await hostApp.guildDb.getEntry(gid)).prefix;
   const generalHelpEmbed = new MessageEmbed();
   generalHelpEmbed.setTitle("sasuke prism v" + hostApp.getVersion());
   generalHelpEmbed.setDescription("the worst discord bot | prefix is `" + prefix + "`");

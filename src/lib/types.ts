@@ -90,4 +90,8 @@ export type DBEntry = {
   version: number | undefined
 }
 
+export function getPlayerFieldId(gid: string, pid: string): string {
+  return `${gid}-${pid}`;
+}
+
 export type ItemSlot = "armor" | "boots" | "primaryHand" | "secondaryHand" | "offhandLeft" | "offhandRight";

@@ -12,6 +12,7 @@ import { VersionBehavior } from "./behavior/version";
 import { ActivityBehavior } from "./behavior/activity";
 import { UwUBanBehavior } from "./behavior/banuwu";
 import { PassivesBehavior } from "./behavior/passives";
+import { InfoCmd } from "./commands/info";
 
 async function main() {
   const app = new Application();
@@ -24,6 +25,7 @@ async function main() {
   app.registerCommand(new PrefixCmd());
   app.registerCommand(new SudoCmd());
   app.registerCommand(new HelpCmd());
+  app.registerCommand(new InfoCmd());
 
   app.addBehavior(new ActivityBehavior());
   app.addBehavior(new UwUBanBehavior());

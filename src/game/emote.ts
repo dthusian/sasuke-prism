@@ -7,5 +7,5 @@ const emotes: { [x: string]: string } = {
 };
 
 export function makeRarity(rarity: number): string {
-  return (new Array(rarity) as string[]).fill(emotes["star" + rarity], 0, rarity).join(" ");
+  return (new Array(rarity) as string[]).fill(emotes["star" + rarity], 0, rarity).join("\u200b");
 }
