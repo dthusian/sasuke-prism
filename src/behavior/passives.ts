@@ -2,6 +2,7 @@ import { Behavior } from "../lib/behavior";
 import { LoadExecContext } from "../lib/context";
 import { getReqdExp } from "../game/level";
 import { getPlayerFieldId } from "../lib/types";
+import { addXpToPlayer } from "../game/util";
 
 const xpPassiveInterval = 1000 * 60 * 5; // 5 Minutes
 const xpPassiveIncreaseAmount = 5;
@@ -19,12 +20,7 @@ export class PassivesBehavior extends Behavior {
       }
       if(pl.timers["passive"] < (+new Date) - xpPassiveInterval) {
         pl.timers["passive"] = +new Date;
-        pl.stats.xp += xpPassiveIncreaseAmount;
-        // Add XP and check
-        while(pl.stats.xp > getReqdExp(pl.stats.level)) {
-          pl.stats.xp -= getReqdExp(pl.stats.level);
-          pl.stats.level++;
-        }
+        addXpToPlayer(pl, xpPassiveIncreaseAmount)
       }
     });
   }

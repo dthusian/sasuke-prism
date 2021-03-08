@@ -5,19 +5,23 @@ export type DictOf<T> = { [key: string]: T };
 
 export type GuildData = {
   _id: string,
-  version: number,
+  version: 1,
   prefix: string
 }
 
 export type PlayerData = {
   _id: string,
-  version: 1,
+  version: 2,
   stats: {
     level: number,
-    xp: number
+    xp: number,
+    hp: number
   },
   timers: { [x: string]: number },
-  loadout: { [x: string]: ToolData },
+  loadout: { 
+    mainhand: string | null,
+    armor: string | null
+  },
   tools: ToolData[],
   materials: MaterialData[]
 }
@@ -58,8 +62,11 @@ export class PlayerDataCvtr implements IDatabaseObjectConverter<PlayerData> {
     if(typeof obj["version"] !== "number") throw new TypeError("Invalid data");
     const version = obj["version"];
     switch(version) {
-      case 1: {
+      case 2: {
         return obj as PlayerData;
+      }
+      case 1: {
+        throw new Error("Not implemented");
       }
       default: {
         throw new Error("Unknown data format");
@@ -72,13 +79,17 @@ export class PlayerDataCvtr implements IDatabaseObjectConverter<PlayerData> {
   newObject(id: string): PlayerData {
     return {
       _id: id,
-      version: 1,
+      version: 2,
       stats: {
         level: 1,
-        xp: 0
+        xp: 0,
+        hp: 1000
       },
       timers: {},
-      loadout: {},
+      loadout: {
+        mainhand: null,
+        armor: null
+      },
       tools: [],
       materials: []
     };
@@ -93,5 +104,3 @@ export type DBEntry = {
 export function getPlayerFieldId(gid: string, pid: string): string {
   return `${gid}-${pid}`;
 }
-
-export type ItemSlot = "armor" | "boots" | "primaryHand" | "secondaryHand" | "offhandLeft" | "offhandRight";

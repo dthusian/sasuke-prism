@@ -1,5 +1,5 @@
 import { GuildMember } from "discord.js";
-import { addMaterialToPlayer } from "../game/itemutil";
+import { addMaterialToPlayer } from "../game/util";
 import { Command, HelpMessage } from "../lib/command";
 import { CommandExecContext } from "../lib/context";
 
@@ -25,9 +25,9 @@ export class SudoCmd extends Command {
     };
   }
   async onCommand(args: string[], ctx: CommandExecContext): Promise<string | string[] | null> {
-    if(!ctx.message.guild) return null;
-    const guild = ctx.message.guild;
-    const gauthor = guild.member(ctx.message.author);
+    if(!ctx.msg.guild) return null;
+    const guild = ctx.msg.guild;
+    const gauthor = guild.member(ctx.msg.author);
     if(!gauthor) return null;
     if(!isSudoer(gauthor)) {
       return `${gauthor.displayName} is not in the sudoers file.\nThis incident will be reported.`;
@@ -35,7 +35,7 @@ export class SudoCmd extends Command {
     // Now after validating that it is a sudoer, we can execute command
     switch(args[0]) {
       case "ban": {
-        const mentions = ctx.message.mentions;
+        const mentions = ctx.msg.mentions;
         if(!mentions.members) {
           return "Specify a user.";
         }
@@ -58,10 +58,11 @@ export class SudoCmd extends Command {
         return await Promise.all(bans);
       }
       case "gcstat": {
-        return (process.memoryUsage().heapUsed / 1024) + " KB";
+        const bytes = process.memoryUsage().heapUsed.toString();
+        return bytes + " bytes";
       }
       case "debugitem": {
-        addMaterialToPlayer(ctx.hostApp.playerDb, ctx.guildInfo._id, DEV_ID, "test", 1);
+        addMaterialToPlayer(await ctx.getPlayerData(), "test", 1);
         return null;
       }
       default: {

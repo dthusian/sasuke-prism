@@ -16,7 +16,12 @@ export type ToolJSON = {
   description: string,
   class: ToolClass,
   allowedRarity: number[],
-  recipe: { [x: string]: number }
+  recipe: { [x: string]: number },
+  stats: {
+    atk: number,
+    spd: number,
+    cost: number
+  }
 }
 
 export type MaterialData = {
@@ -27,7 +32,12 @@ export type MaterialData = {
 export type ToolData = {
   id: string,
   rarity: number,
-  merge: number
+  merge: number,
+  iv: {
+    atk: number,
+    spd: number,
+    cost: number
+  }
 }
 
 export class ItemRegistry {

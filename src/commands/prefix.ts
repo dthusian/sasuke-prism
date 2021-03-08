@@ -15,10 +15,10 @@ export class PrefixCmd extends Command {
   }
   async onCommand(args: string[], ctx: CommandExecContext): Promise<MessageEmbed | null> {
     if(!args[0]) return null;
-    if(!ctx.message.guild) return null;
+    if(!ctx.msg.guild) return null;
     let pre = args[0];
     if(args.length > 1) pre += " ";
-    (await ctx.hostApp.guildDb.getEntry(ctx.message.guild.id)).prefix = pre;
+    (await ctx.getGuildData()).prefix = pre;
     const embed = new MessageEmbed();
     embed.setTitle("Success");
     embed.setDescription("Prefix set to: `" + pre + "`");

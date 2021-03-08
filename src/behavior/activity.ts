@@ -5,11 +5,9 @@ const games: [
   "PLAYING" | "WATCHING" | "LISTENING", string
 ][] = [
   ["PLAYING", "Thaumcraft 4"],
-  ["PLAYING", "Sonic Forces: Plus Ultra"],
   ["PLAYING", "Visual Studio Code"],
   ["PLAYING", "Cytus 2"],
-  ["PLAYING", "Among Us"],
-  ["WATCHING", "xkcd"],
+  ["PLAYING", "the bongcloud gambit"],
   ["WATCHING", "Earrape Microphone Tutorial"],
   ["LISTENING", "Datacenter ASMR"]
 ];

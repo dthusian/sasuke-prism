@@ -17,9 +17,9 @@ export class LevelCmd extends Command {
   async onCommand(args: string[], ctx: CommandExecContext): Promise<MessageEmbed> {
     const pdata = await ctx.getPlayerData();
     const embed = new MessageEmbed();
-    const player = ctx.message.author;
+    const player = ctx.msg.author;
     embed.setTitle(`${getTitleFromLevel(pdata.stats.level)} ${player.username}`);
-    embed.setColor(await ctx.hostApp.config.loadColor("level"));
+    embed.setColor(await ctx.getConfigColor("level"));
     embed.addField("Level", pdata.stats.level, true);
     const xp = pdata.stats.xp;
     const xpReq = getReqdExp(pdata.stats.level);

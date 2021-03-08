@@ -1,6 +1,8 @@
-import { Message } from "discord.js";
+import { GuildMember, Message } from "discord.js";
+import { ItemRegistry } from "../game/item";
+import { GameManager } from "../game/manager";
 import { Application } from "./app";
-import { PlayerData, GuildData } from "./types";
+import { PlayerData, GuildData, getPlayerFieldId } from "./types";
 
 export class LoadExecContext {
   hostApp: Application;
@@ -10,15 +12,47 @@ export class LoadExecContext {
 }
 
 export class CommandExecContext {
-  hostApp: Application;
-  message: Message;
-  guildInfo: GuildData;
-  constructor(app: Application, msg: Message, guild: GuildData) {
-    this.hostApp = app;
-    this.message = msg;
-    this.guildInfo = guild;
+  app: Application;
+  msg: Message;
+  constructor(app: Application, msg: Message) {
+    this.app = app;
+    this.msg = msg;
+  }
+  async getGuildData(): Promise<GuildData> {
+    if(this.msg.guild)
+      return await this.app.guildDb.getEntry(this.msg.guild.id);
+    throw new Error("Unreachable");
   }
   async getPlayerData(): Promise<PlayerData> {
-    return await this.hostApp.playerDb.getEntry(this.message.author.id);
+    if(this.msg.guild)
+      return await this.app.playerDb.getEntry(getPlayerFieldId(this.msg.guild.id, this.msg.author.id));
+    throw new Error("Unreachable");
+  }
+  getSender(): GuildMember {
+    if(this.msg.guild) {
+      const maybeMember = this.msg.guild.member(this.msg.author);
+      if(maybeMember) {
+        return maybeMember;
+      } else {
+        throw new Error("Unreachable");
+      }
+    } else {
+      throw new Error("Unreachable");
+    }
+  }
+  getGame(): GameManager {
+    return this.app.game;
+  }
+  getItemManager(): ItemRegistry {
+    return this.app.game.items;
+  }
+  async getConfig(name: string): Promise<unknown> {
+    return await this.app.config.load(name);
+  }
+  async getConfigColor(name: string): Promise<[number, number, number]> {
+    return await this.app.config.loadColor(name);
+  }
+  async getConfigToken(name: string): Promise<string> {
+    return await this.app.config.loadToken(name);
   }
 }

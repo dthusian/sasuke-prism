@@ -1,9 +1,10 @@
 import { MessageEmbed } from "discord.js";
 import { makeRarity } from "../game/emote";
 import { ItemRegistry } from "../game/item";
-import { findPlayerTool } from "../game/itemutil";
+import { findPlayerTool } from "../game/util";
 import { Command, CommandReturnType, HelpMessage } from "../lib/command";
 import { CommandExecContext } from "../lib/context";
+import { getPlayerFieldId } from "../lib/types";
 
 export class InfoCmd extends Command {
   getCommandString(): string[] {
@@ -17,8 +18,8 @@ export class InfoCmd extends Command {
     }
   }
   async onCommand(args: string[], ctx: CommandExecContext): Promise<string | MessageEmbed | null> {
-    const items = ctx.hostApp.game.items;
-    const id = args.join("_");
+    const items = ctx.getItemManager();
+    const id = args.join("_").toLowerCase();
     if(!id) return null;
     if(items.materials[id]) {
       const embed = new MessageEmbed();
@@ -30,7 +31,7 @@ export class InfoCmd extends Command {
     } else if(items.tools[id]) {
       const embed = new MessageEmbed();
       const mat = items.tools[id];
-      const plToolDat = await findPlayerTool(ctx.hostApp.playerDb, ctx.guildInfo._id, ctx.message.author.id, id);
+      const plToolDat = await findPlayerTool(await ctx.getPlayerData(), id);
       if(plToolDat) {
         if(plToolDat.merge > 1) {
           embed.setTitle(`${makeRarity(plToolDat.rarity)} ${mat.name} (x${plToolDat.merge})`);

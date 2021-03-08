@@ -113,8 +113,8 @@ export class DronestrikeCmd extends Command {
   }
   onCommand(args: string[], ctx: CommandExecContext): string | null {
     const message = args.join(" ");
-    if(!ctx.message.guild) return null;
-    const gid = ctx.message.guild.id;
+    if(!ctx.msg.guild) return null;
+    const gid = ctx.msg.guild.id;
     if(!message) {
       if(ongoingDronestrikes[gid] && ongoingDronestrikes[gid] !== null) {
         const ongoing = ongoingDronestrikes[gid];
@@ -130,10 +130,10 @@ export class DronestrikeCmd extends Command {
       if(ongoingDronestrikes[gid] && ongoingDronestrikes[gid] !== null) {
         return "There is already a dronestrike ongoing!";
       } else {
-        const dronestrike = new Dronestrike(ctx.hostApp);
+        const dronestrike = new Dronestrike(ctx.app);
         dronestrike.contentFactory = () => message;
-        dronestrike.targetGuild = ctx.message.guild;
-        dronestrike.ignoreChannels = [ctx.message.channel.id];
+        dronestrike.targetGuild = ctx.msg.guild;
+        dronestrike.ignoreChannels = [ctx.msg.channel.id];
         dronestrike.run();
         return "Dronestrike authorized.";
       }
