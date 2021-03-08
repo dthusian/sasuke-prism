@@ -1,5 +1,5 @@
 import { GuildMember } from "discord.js";
-import { addMaterialToPlayer } from "../game/itemdb";
+import { addMaterialToPlayer } from "../game/itemutil";
 import { Command, HelpMessage } from "../lib/command";
 import { CommandExecContext } from "../lib/context";
 
@@ -58,10 +58,10 @@ export class SudoCmd extends Command {
         return await Promise.all(bans);
       }
       case "gcstat": {
-        return process.memoryUsage().heapUsed.toString();
+        return (process.memoryUsage().heapUsed / 1024) + " KB";
       }
       case "debugitem": {
-        addMaterialToPlayer(ctx.hostApp.playerDb, DEV_ID, "test", 1);
+        addMaterialToPlayer(ctx.hostApp.playerDb, ctx.guildInfo._id, DEV_ID, "test", 1);
         return null;
       }
       default: {

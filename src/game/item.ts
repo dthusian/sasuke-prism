@@ -26,7 +26,8 @@ export type MaterialData = {
 
 export type ToolData = {
   id: string,
-  rarity: number
+  rarity: number,
+  merge: number
 }
 
 export class ItemRegistry {

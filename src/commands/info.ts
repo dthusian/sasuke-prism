@@ -1,6 +1,7 @@
 import { MessageEmbed } from "discord.js";
 import { makeRarity } from "../game/emote";
 import { ItemRegistry } from "../game/item";
+import { findPlayerTool } from "../game/itemutil";
 import { Command, CommandReturnType, HelpMessage } from "../lib/command";
 import { CommandExecContext } from "../lib/context";
 
@@ -15,7 +16,7 @@ export class InfoCmd extends Command {
       example: "info <item>",
     }
   }
-  onCommand(args: string[], ctx: CommandExecContext): CommandReturnType {
+  async onCommand(args: string[], ctx: CommandExecContext): Promise<string | MessageEmbed | null> {
     const items = ctx.hostApp.game.items;
     const id = args.join("_");
     if(!id) return null;
@@ -29,13 +30,26 @@ export class InfoCmd extends Command {
     } else if(items.tools[id]) {
       const embed = new MessageEmbed();
       const mat = items.tools[id];
-      embed.setTitle(mat.name);
+      const plToolDat = await findPlayerTool(ctx.hostApp.playerDb, ctx.guildInfo._id, ctx.message.author.id, id);
+      if(plToolDat) {
+        if(plToolDat.merge > 1) {
+          embed.setTitle(`${makeRarity(plToolDat.rarity)} ${mat.name} (x${plToolDat.merge})`);
+        } else {
+          embed.setTitle(`${makeRarity(plToolDat.rarity)} ${mat.name}`);
+        }
+      } else {
+        embed.setTitle(mat.name);
+      }
       embed.addField("Description", mat.description);
       const rarities = [];
       for(let i = 0; i < mat.allowedRarity.length; i++) {
         rarities.push(makeRarity(mat.allowedRarity[i]));
       }
       embed.addField("Rarities", rarities.join("\n"));
+      if(Object.keys(mat.recipe).length) {
+        embed.addField("Recipe", Object.entries(mat.recipe).map(v => `${v[1]}x ${items.materials[v[0]].name}`).join("\n"));
+      }
+      embed.setFooter(id);
       return embed;
     } else {
       return "Item not found - try searching the internal ID";
