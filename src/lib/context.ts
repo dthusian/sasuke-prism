@@ -46,8 +46,8 @@ export class CommandExecContext {
   getItemManager(): ItemRegistry {
     return this.app.game.items;
   }
-  async getConfig(name: string): Promise<unknown> {
-    return await this.app.config.load(name);
+  async getConfig<T>(name: string): Promise<T> {
+    return await this.app.config.load<T>(name);
   }
   async getConfigColor(name: string): Promise<[number, number, number]> {
     return await this.app.config.loadColor(name);

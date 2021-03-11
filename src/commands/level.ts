@@ -29,6 +29,7 @@ export class LevelCmd extends Command {
     xpStr += ":black_large_square:".repeat(10 - numOnTiles);
     xpStr += ` (${xp}/${xpReq})`;
     embed.addField("XP", xpStr, true);
+    embed.setColor(await ctx.getConfigColor("embedTypeInfo"));
     return embed;
   }
 }

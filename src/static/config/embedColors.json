@@ -1,6 +1,9 @@
 {
-  "dice": "CYAN",
-  "level": "CYAN",
-  "ip": "CYAN",
-  "help": "CYAN"
+  "embedTypeInfo": "CYAN",
+  "embedTypeResult": "SKYBLUE",
+  "embedRarityCommon": [142, 142, 142],
+  "embedRarityUncommon": [50, 224, 11],
+  "embedRarityRare": [11, 100, 224],
+  "embedRarityUltraRare": [224, 185, 11],
+  "embedRarityLegendary": [78, 11, 224]
 }

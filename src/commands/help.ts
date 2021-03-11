@@ -34,7 +34,7 @@ export class HelpCmd extends Command {
       } else {
         embed.addField("Example", `${baseCmd} ${helpMsg.example}`);
       }
-      embed.setColor(await ctx.getConfigColor("help"));
+      embed.setColor(await ctx.getConfigColor("embedTypeInfo"));
       return embed;
     }
   }

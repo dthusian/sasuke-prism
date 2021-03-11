@@ -51,6 +51,7 @@ export class InfoCmd extends Command {
         embed.addField("Recipe", Object.entries(mat.recipe).map(v => `${v[1]}x ${items.materials[v[0]].name}`).join("\n"));
       }
       embed.setFooter(id);
+      embed.setColor(await ctx.getConfigColor("embedTypeColor"));
       return embed;
     } else {
       return "Item not found - try searching the internal ID";

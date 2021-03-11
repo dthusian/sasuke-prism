@@ -38,7 +38,7 @@ export class DiceCmd extends Command {
       }
     });
     embed.setTitle(`Result of ${totalRolls} dice`);
-    embed.setColor(await ctx.getConfigColor("dice"));
+    embed.setColor(await ctx.getConfigColor("embedTypeInfo"));
     return embed;
   }
 }

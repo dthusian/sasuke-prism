@@ -31,6 +31,7 @@ export class InventoryCmd extends Command {
     } else {
       embed.addField("Materials", "(there's nothing here)");
     }
+    embed.setColor(await ctx.getConfigColor("embedTypeInfo"));
     return embed;
   }
 }

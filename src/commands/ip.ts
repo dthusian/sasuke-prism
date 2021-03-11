@@ -51,7 +51,7 @@ export class IPCmd extends Command {
   }
   async onCommand(args: string[], ctx: CommandExecContext): Promise<(MessageEmbed | null)[] | null> {
     const key = await ctx.getConfigToken("ipdata");
-    const color = await ctx.getConfigColor("ip");
+    const color = await ctx.getConfigColor("embedTypeInfo");
     if(!canSendReq(this)) return null;
     const vals = await Promise.all(args.map(async v => {
       if(v.match(/^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/)) {

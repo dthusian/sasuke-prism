@@ -5,11 +5,11 @@ export class ConfigManager {
   constructor() {
     this.configCache = {};
   }
-  async load(name: string): Promise<unknown> {
-    if(this.configCache[name]) return this.configCache[name];
+  async load<T>(name: string): Promise<T> {
+    if(this.configCache[name]) return this.configCache[name] as T;
     const json = JSON.parse((await promises.readFile("./static/config/" + name + ".json")).toString()) as unknown;
     this.configCache[name] = json;
-    return json;
+    return json as T;
   }
   async loadToken(name: string): Promise<string> {
     if(!this.configCache["_tokens"]) {
@@ -19,9 +19,14 @@ export class ConfigManager {
     return tokens[name];
   }
   async loadColor(name: string): Promise<[number, number, number]> {
-    return (await this.load("colors") as { [x: string]: [number, number, number]})[
-      (await this.load("embedColors") as { [x: string]: string })[name]
-    ];
+    const colorconf = await this.load<{ [x: string]: [number, number, number]}>("colors");
+    const embedcolorconf = await this.load<{ [x: string]: string | [number, number, number] }>("embedColors");
+    const embedcolorthis = embedcolorconf[name];
+    if(typeof embedcolorthis === "object") {
+      return embedcolorthis;
+    } else {
+      return colorconf[embedcolorthis];
+    }
   }
   async loadFile(path: string): Promise<Buffer | null> {
     let buf;

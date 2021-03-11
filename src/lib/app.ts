@@ -52,7 +52,7 @@ export class Application {
 
   async load(): Promise<void> {
     await this.game.load();
-    this.db = new Database(await this.config.load("mongodb") as DBConfig, await this.config.loadToken("mongodb"));
+    this.db = new Database(await this.config.load<DBConfig>("mongodb"), await this.config.loadToken("mongodb"));
     await this.db.load();
     this.guildDb = await this.db.loadDataset("guilds", new GuildDataCvtr());
     this.playerDb = await this.db.loadDataset("players", new PlayerDataCvtr());

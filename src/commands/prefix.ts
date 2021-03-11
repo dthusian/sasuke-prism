@@ -22,6 +22,7 @@ export class PrefixCmd extends Command {
     const embed = new MessageEmbed();
     embed.setTitle("Success");
     embed.setDescription("Prefix set to: `" + pre + "`");
+    embed.setColor(await ctx.getConfigColor("embedTypeResult"));
     return embed;
   }
 }
