@@ -55,4 +55,7 @@ export class CommandExecContext {
   async getConfigToken(name: string): Promise<string> {
     return await this.app.config.loadToken(name);
   }
+  async getAsset(path: string): Promise<Buffer | null> {
+    return await this.app.config.loadFile(path);
+  }
 }

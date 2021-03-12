@@ -37,4 +37,7 @@ export class ConfigManager {
     }
     return buf;
   }
+  async readdir(path: string): Promise<string[]> {
+    return await promises.readdir("./static/assets/" + path);
+  }
 }
