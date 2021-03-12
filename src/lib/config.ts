@@ -29,6 +29,7 @@ export class ConfigManager {
     }
   }
   async loadFile(path: string): Promise<Buffer | null> {
+    if(path.match(/\.\./g)) return null; // Path traversal >:(
     let buf;
     try {
       buf = await promises.readFile("./static/assets/" + path);

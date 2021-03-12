@@ -1,0 +1,61 @@
+{
+  "title": "Absolute Value",
+  "description": ["Calculates the Absolute Value of each element inside the vector.",
+    "The Absolute Value of a number _n_ is defined the distance from 0 to the _n_ on a number line."],
+  "intrinsics": [
+    {
+      "signature": "__m128i _mm_abs_epi16 (__m128i a)",
+      "vectorLength": 128,
+      "datatype": "i16",
+      "tech": "ssse3"
+    },
+    {
+      "signature": "__m256i _mm256_abs_epi16 (__m256i a)",
+      "vectorLength": 256,
+      "datatype": "i16",
+      "tech": "avx2"
+    },
+    {
+      "signature": "__m512i _mm512_abs_epi16 (__m512i a)",
+      "vectorLength": 512,
+      "datatype": "i16",
+      "tech": "avx512bw"
+    },
+    {
+      "signature": "__m128i _mm_abs_epi32 (__m128i a)",
+      "vectorLength": 128,
+      "datatype": "i32",
+      "tech": "ssse3"
+    },
+    {
+      "signature": "__m256i _mm256_abs_epi32 (__m256i a)",
+      "vectorLength": 256,
+      "datatype": "i32",
+      "tech": "avx2"
+    },
+    {
+      "signature": "__m512i _mm512_abs_epi32 (__m512i a)",
+      "vectorLength": 512,
+      "datatype": "i32",
+      "tech": "avx512bw"
+    },
+    {
+      "signature": "__m128i _mm_abs_epi64 (__m128i a)",
+      "vectorLength": 128,
+      "datatype": "i64",
+      "tech": "ssse3"
+    },
+    {
+      "signature": "__m256i _mm256_abs_epi64 (__m256i a)",
+      "vectorLength": 256,
+      "datatype": "i64",
+      "tech": "avx2"
+    },
+    {
+      "signature": "__m512i _mm512_abs_epi64 (__m512i a)",
+      "vectorLength": 512,
+      "datatype": "i64",
+      "tech": "avx512bw"
+    }
+  ]
+}

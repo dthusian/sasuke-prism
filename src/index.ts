@@ -15,6 +15,7 @@ import { PassivesBehavior } from "./behavior/passives";
 import { InfoCmd } from "./commands/info";
 import { InventoryCmd } from "./commands/inventory";
 import { AttackCmd } from "./commands/attack";
+import { SimdCmd } from "./commands/simd";
 
 async function main() {
   const app = new Application();
@@ -30,6 +31,7 @@ async function main() {
   app.registerCommand(new InfoCmd());
   app.registerCommand(new InventoryCmd());
   app.registerCommand(new AttackCmd());
+  app.registerCommand(new SimdCmd());
 
   app.addBehavior(new ActivityBehavior());
   app.addBehavior(new UwUBanBehavior());

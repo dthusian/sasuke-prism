@@ -3,6 +3,25 @@ import { makeGeneralHelpEmbed } from "../behavior/version";
 import { Command, HelpMessage } from "../lib/command";
 import { CommandExecContext } from "../lib/context";
 
+export function makeHelpEmbed(helpMsg: HelpMessage, baseCmd: string, color: [number, number, number]): MessageEmbed {
+  const embed = new MessageEmbed();
+  const spl = baseCmd.split(" ");
+  embed.setTitle("Command - " + spl[spl.length - 1]);
+  if(helpMsg.syntax instanceof Array) {
+    embed.addField("Syntax", `\`${baseCmd} ${helpMsg.syntax.join("\n")}\``);
+  } else {
+    embed.addField("Syntax", `\`${baseCmd} ${helpMsg.syntax}\``);
+  }
+  embed.addField("Description", helpMsg.message);
+  if(helpMsg.example instanceof Array) {
+    embed.addField("Example", `\`${baseCmd} ${helpMsg.example.join("\n")}\``);
+  } else {
+    embed.addField("Example", `\`${baseCmd} ${helpMsg.example}\``);
+  }
+  embed.setColor(color);
+  return embed;
+}
+
 export class HelpCmd extends Command {
   getCommandString(): string[] {
     return ["help" , "h"];
@@ -18,24 +37,10 @@ export class HelpCmd extends Command {
     if(!args[0]) {
       return makeGeneralHelpEmbed(ctx.app, (await ctx.getGuildData())._id);
     } else {
-      const helpMsg = ctx.app.commands[args[0]].getHelpMessage();
-      if(!helpMsg) return null;
-      const embed = new MessageEmbed();
-      embed.setTitle("Command - " + args[0]);
-      const baseCmd = (await ctx.getGuildData()).prefix + args[0];
-      if(helpMsg.syntax instanceof Array) {
-        embed.addField("Syntax", `${baseCmd} ${helpMsg.syntax.join("\n")}`);
-      } else {
-        embed.addField("Syntax", `${baseCmd} ${helpMsg.syntax}`);
-      }
-      embed.addField("Description", helpMsg.message);
-      if(helpMsg.example instanceof Array) {
-        embed.addField("Example", `${baseCmd} ${helpMsg.example.join("\n")}`);
-      } else {
-        embed.addField("Example", `${baseCmd} ${helpMsg.example}`);
-      }
-      embed.setColor(await ctx.getConfigColor("embedTypeInfo"));
-      return embed;
+      const cmd = ctx.app.commands[args[0]];
+      if(!cmd) return null;
+      const helpMsg = cmd.getHelpMessage();
+      return makeHelpEmbed(helpMsg, (await ctx.getGuildData()).prefix + args[0], await ctx.getConfigColor("embedTypeInfo"));
     }
   }
 }

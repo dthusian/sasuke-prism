@@ -6,14 +6,15 @@ export function parseSwitches(args: string[]): { switches: { [x: string]: string
   for(let i = 0; i < args.length; i++) {
     const el = args[i];
     if(el.startsWith("--")) {
-      const val = el.split("=")[1];
+      const spl = el.slice(2).split("=");
+      const val = spl[1];
       if(val === undefined) {
-        ret.switches[el.slice(2)] = "true";
+        ret.switches[spl[0]] = "true";
       } else {
-        ret.switches[el.slice(2)] = val;
+        ret.switches[spl[0]] = val;
       }
     } else {
-      args.push(el);
+      ret.args.push(el);
     }
   }
   return ret;

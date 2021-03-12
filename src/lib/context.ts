@@ -2,6 +2,7 @@ import { GuildMember, Message } from "discord.js";
 import { ItemRegistry } from "../game/item";
 import { GameManager } from "../game/manager";
 import { Application } from "./app";
+import { Command } from "./command";
 import { PlayerData, GuildData, getPlayerFieldId } from "./types";
 
 export class LoadExecContext {
@@ -14,9 +15,11 @@ export class LoadExecContext {
 export class CommandExecContext {
   app: Application;
   msg: Message;
-  constructor(app: Application, msg: Message) {
+  cmd: Command;
+  constructor(app: Application, cmd: Command, msg: Message) {
     this.app = app;
     this.msg = msg;
+    this.cmd = cmd;
   }
   async getGuildData(): Promise<GuildData> {
     if(this.msg.guild)
@@ -57,5 +60,8 @@ export class CommandExecContext {
   }
   async getAsset(path: string): Promise<Buffer | null> {
     return await this.app.config.loadFile(path);
+  }
+  getCommand(): Command {
+    return this.cmd;
   }
 }

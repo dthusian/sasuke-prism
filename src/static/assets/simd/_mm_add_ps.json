@@ -1,6 +1,0 @@
-{
-  "optype": "add",
-  "op": "add",
-  "techs": ["SSE"],
-  "intrinsic": "__m128 _mm_add_ps(__m128 a, __m128 b)"
-}

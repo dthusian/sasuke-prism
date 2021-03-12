@@ -72,7 +72,7 @@ export class Application {
       // Run the command
       const cmd = this.commands[commandName];
       try {
-        const embed = cmd.onCommand(args.slice(1), new CommandExecContext(this, msg));
+        const embed = cmd.onCommand(args.slice(1), new CommandExecContext(this, cmd, msg));
         await resolveAndSendEmbeds(msg.channel, embed);
       } catch(err: unknown) {
         this.logs.logError("Unhandled exception in command handler");

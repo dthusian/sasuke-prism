@@ -1,0 +1,102 @@
+{
+  "pentium3": {
+    "name": "Pentium III",
+    "techs": ["sse"]
+  },
+  "pentium4": {
+    "name": "Pentium 4",
+    "techs": ["sse", "sse2"]
+  },
+  "prescott": {
+    "name": "Prescott",
+    "techs": ["sse", "sse2", "sse3"]
+  },
+  "core2": {
+    "name": "Core 2",
+    "techs": ["sse", "sse2", "sse3", "ssse3"]
+  },
+  "nehalem": {
+    "name": "Nehalem",
+    "techs": ["sse", "sse2", "sse3", "ssse3", "sse4.1", "sse4.2"]
+  },
+  "westmere": {
+    "name": "Westmere",
+    "techs": ["sse", "sse2", "sse3", "ssse3", "sse4.1", "sse4.2"]
+  },
+  "sandybridge": {
+    "name": "Sandy Bridge",
+    "techs": ["sse", "sse2", "sse3", "ssse3", "sse4.1", "sse4.2", "avx"]
+  },
+  "ivybridge": {
+    "name": "Ivy Bridge",
+    "techs": ["sse", "sse2", "sse3", "ssse3", "sse4.1", "sse4.2", "avx"]
+  },
+  "haswell": {
+    "name": "Haswell",
+    "techs": ["sse", "sse2", "sse3", "ssse3", "sse4.1", "sse4.2", "avx", "avx2", "fma"]
+  },
+  "broadwell": {
+    "name": "Broadwell",
+    "techs": ["sse", "sse2", "sse3", "ssse3", "sse4.1", "sse4.2", "avx", "avx2", "fma"]
+  },
+  "skylake": {
+    "name": "Skylake",
+    "techs": ["sse", "sse2", "sse3", "ssse3", "sse4.1", "sse4.2", "avx", "avx2", "fma"]
+  },
+  "bonnell": {
+    "name": "Bonnell",
+    "techs": ["sse", "sse2", "sse3", "ssse3"]
+  },
+  "silvermont": {
+    "name": "Silvermont",
+    "techs": ["sse", "sse2", "sse3", "ssse3", "sse4.1", "sse4.2"]
+  },
+  "goldmont": {
+    "name": "Goldmont",
+    "techs": ["sse", "sse2", "sse3", "ssse3", "sse4.1", "sse4.2"]
+  },
+  "goldmont-plus": {
+    "name": "Goldmont Plus",
+    "techs": ["sse", "sse2", "sse3", "ssse3", "sse4.1", "sse4.2"]
+  },
+  "tremont": {
+    "name": "Tremont",
+    "techs": ["sse", "sse2", "sse3", "ssse3", "sse4.1", "sse4.2"]
+  },
+  "knl": {
+    "name": "Knights' Landing",
+    "techs": ["sse", "sse2", "sse3", "ssse3", "sse4.1", "sse4.2", "avx", "avx2", "fma", "avx512f", "avx512pf", "avx512er", "avx512cd"]
+  },
+  "knm": {
+    "name": "Knights' Mill",
+    "techs": ["sse", "sse2", "sse3", "ssse3", "sse4.1", "sse4.2", "avx", "avx2", "fma", "avx512f", "avx512pf", "avx512er", "avx512cd", "avx512_4vnniw", "avx512_4fmaps", "avx512_vpopcntdq"]
+  },
+  "skylake-avx512": {
+    "name": "Skylake with AVX-512",
+    "techs": ["sse", "sse2", "sse3", "ssse3", "sse4.1", "sse4.2", "avx", "avx2", "fma", "avx512f", "avx512vl", "avx512bw", "avx512dq", "avx512cd"]
+  },
+  "cannonlake": {
+    "name": "Cannon Lake",
+    "techs": ["sse", "sse2", "sse3", "ssse3", "sse4.1", "sse4.2", "avx", "avx2", "fma", "avx512f", "avx512vl", "avx512bw", "avx512dq", "avx512cd", "avx512_vbmi", "avx512_ifma"]
+  },
+  "icelake-client": {
+    "name": "Ice Lake Client",
+    "techs": ["sse", "sse2", "sse3", "ssse3", "sse4.1", "sse4.2", "avx", "avx2", "fma", "avx512f", "avx512vl", "avx512bw", "avx512dq", "avx512cd", "avx512_vbmi", "avx512_ifma", "avx512_vbmi2", "avx512_vpopcntdq", "avx512_bitalg", "avx512_vnni", "avx512_vpclmulqdq"]
+  },
+  "icelake-server": {
+    "name": "Ice Lake Server",
+    "techs": ["sse", "sse2", "sse3", "ssse3", "sse4.1", "sse4.2", "avx", "avx2", "fma", "avx512f", "avx512vl", "avx512bw", "avx512dq", "avx512cd", "avx512_vbmi", "avx512_ifma", "avx512_vbmi2", "avx512_vpopcntdq", "avx512_bitalg", "avx512_vnni", "avx512_vpclmulqdq"]
+  },
+  "cascadelake": {
+    "name": "Cascade Lake",
+    "techs": ["sse", "sse2", "sse3", "ssse3", "sse4.1", "sse4.2", "avx", "avx2", "fma", "avx512f", "avx512vl", "avx512bw", "avx512dq", "avx512cd", "avx512_vnni"]
+  },
+  "cooperlake": {
+    "name": "Cooper Lake",
+    "techs": ["sse", "sse2", "sse3", "ssse3", "sse4.1", "sse4.2", "avx", "avx2", "fma", "avx512f", "avx512vl", "avx512bw", "avx512dq", "avx512cd", "avx512_vnni", "avx512_bf16"]
+  },
+  "tigerlake": {
+    "name": "Tiger Lake",
+    "techs": ["sse", "sse2", "sse3", "ssse3", "sse4.1", "sse4.2", "avx", "avx2", "fma", "avx512f", "avx512vl", "avx512bw", "avx512dq", "avx512cd", "avx512_vbmi", "avx512_ifma", "avx512_vbmi2", "avx512_vpopcntdq", "avx512_bitalg", "avx512_vnni", "avx512_vpclmulqdq", "avx512_vp2intersect"]
+  }
+}
