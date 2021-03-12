@@ -8,7 +8,7 @@ class TempStorageEntry<T> {
   constructor(that: TemporaryStorage<T>, id: string, obj: T, ms: number) {
     this.timer = setTimeout(async (that2: TemporaryStorage<T>) => {
       const entry = that2.entries[id];
-      if(entry.callback !== undefined) {
+      if(entry && entry.callback !== undefined) {
         await entry.callback(id, entry.object);
       } else {
         delete that2.entries[id];
@@ -20,7 +20,7 @@ class TempStorageEntry<T> {
     clearTimeout(this.timer);
     this.timer = setTimeout(async (that2: TemporaryStorage<T>) => {
       const entry = that2.entries[id];
-      if(entry.callback !== undefined) {
+      if(entry && entry.callback !== undefined) {
         await entry.callback(id, entry.object);
       } else {
         delete that2.entries[id];

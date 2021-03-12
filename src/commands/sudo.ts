@@ -1,12 +1,12 @@
 import { GuildMember } from "discord.js";
-import { addMaterialToPlayer } from "../game/util";
+import { addMaterialToPlayer, addToolToPlayer, newToolClean } from "../game/util";
 import { Command, HelpMessage } from "../lib/command";
 import { CommandExecContext } from "../lib/context";
 
 export const DEV_ID = "376857210485080064";
 
 function isSudoer(guilder: GuildMember): boolean {
-  return guilder.permissions.has("ADMINISTRATOR") || guilder.id === DEV_ID;
+  return guilder.id === DEV_ID;
 }
 
 export class SudoCmd extends Command {
@@ -21,7 +21,7 @@ export class SudoCmd extends Command {
       example: [
         "ban <@!155149108183695360>",
         "gcstat"],
-      message: "Executes a command as super-user. This, of course, requires administrator. There are only 2 commands that work in super-user mode."
+      message: "This is a debug tool that should only be used by the dev"
     };
   }
   async onCommand(args: string[], ctx: CommandExecContext): Promise<string | string[] | null> {
@@ -63,6 +63,13 @@ export class SudoCmd extends Command {
       }
       case "debugitem": {
         addMaterialToPlayer(await ctx.getPlayerData(), "test", 1);
+        return null;
+      }
+      case "debugtool": {
+        addToolToPlayer(await ctx.getPlayerData(), newToolClean(ctx.getItemManager(), "test_tool"));
+        return null;
+      }
+      case "flush": {
         return null;
       }
       default: {

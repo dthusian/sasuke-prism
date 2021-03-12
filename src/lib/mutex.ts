@@ -20,7 +20,7 @@ export class Mutex {
   release(): void {
     if(this.queue.length){
       const shifted = this.queue.shift();
-      if(shifted) shifted();
+      if(shifted) process.nextTick(shifted);
     }else{
       this.ac = false;
     }

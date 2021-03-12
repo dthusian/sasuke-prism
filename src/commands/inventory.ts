@@ -20,7 +20,7 @@ export class InventoryCmd extends Command {
     const tools = Array.from((await ctx.getPlayerData()).tools);
     if(tools.length) {
       embed.addField("Weapons",
-        tools.map(tdat => `${makeRarity(tdat.rarity)} ${ctx.getItemManager().tools[tdat.id]}\n`));
+        tools.map(tdat => `${makeRarity(tdat.rarity)} ${ctx.getItemManager().tools[tdat.id].name}\n`));
     } else {
       embed.addField("Weapons", "(there's nothing here)");
     }

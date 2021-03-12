@@ -29,6 +29,7 @@ export class AttackCmd extends Command {
       return `${targetUser.displayName} is already dead, no need to attack him`;
     }
     // All conditions satisfied, attack now
+    const prevHp = targetData.stats.hp;
     const attackToolData = senderData.tools.find(v => v.id === senderData.loadout.mainhand);
     if(attackToolData === undefined) {
       fixupPlayerData(senderData);
@@ -38,10 +39,11 @@ export class AttackCmd extends Command {
       ctx.getItemManager().tools[senderData.loadout.mainhand],
       attackToolData
     );
+    const nextHp = targetData.stats.hp;
     const embed = new MessageEmbed();
     embed.setColor(await ctx.getConfigColor("embedTypeResult"));
     embed.setTitle(`Attack on ${targetUser.displayName}`);
-    let buf = `${attackResult.damage} damage dealt\n`;
+    let buf = `${attackResult.damage} damage dealt (${prevHp} -> ${nextHp}\n`;
     buf += `${attackResult.xp} XP gained\n`;
     if(attackResult.dead) {
       buf += `:crab: ${targetUser.displayName} is now dead :crab:`;

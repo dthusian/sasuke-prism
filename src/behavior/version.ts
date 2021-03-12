@@ -15,7 +15,6 @@ export async function makeGeneralHelpEmbed(hostApp: Application, gid: string): P
 \`${prefix}help\` - Get help on a command
 \`${prefix}ip\` - Identify an IP address
 \`${prefix}level\` - Checks your XP and Level
-\`${prefix}sudo\` - (Admin) Various administration commands
 \`${prefix}prefix\` - (Admin) Changes the prefix for the server
 \`${prefix}dronestrike\` - Don't touch that
   `);

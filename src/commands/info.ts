@@ -51,7 +51,15 @@ export class InfoCmd extends Command {
         embed.addField("Recipe", Object.entries(mat.recipe).map(v => `${v[1]}x ${items.materials[v[0]].name}`).join("\n"));
       }
       embed.setFooter(id);
-      embed.setColor(await ctx.getConfigColor("embedTypeColor"));
+      if(plToolDat) {
+        const t0 = await ctx.getConfig<{ stars: string[] }>("rarities");
+        const t1 = t0.stars;
+        const t2 = plToolDat.rarity;
+        const t3 = t1[t2 - 1];
+        embed.setColor(await ctx.getConfigColor(t3));
+      } else {
+        embed.setColor(await ctx.getConfigColor("embedTypeInfo"));
+      }
       return embed;
     } else {
       return "Item not found - try searching the internal ID";

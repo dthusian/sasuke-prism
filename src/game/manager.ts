@@ -9,6 +9,6 @@ export class GameManager {
 
   async load(): Promise<void> {
     await this.items.loadMaterial("test");
-    await this.items.loadTool("testtool");
+    await this.items.loadTool("test_tool");
   }
 }

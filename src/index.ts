@@ -13,6 +13,8 @@ import { ActivityBehavior } from "./behavior/activity";
 import { UwUBanBehavior } from "./behavior/banuwu";
 import { PassivesBehavior } from "./behavior/passives";
 import { InfoCmd } from "./commands/info";
+import { InventoryCmd } from "./commands/inventory";
+import { AttackCmd } from "./commands/attack";
 
 async function main() {
   const app = new Application();
@@ -26,6 +28,8 @@ async function main() {
   app.registerCommand(new SudoCmd());
   app.registerCommand(new HelpCmd());
   app.registerCommand(new InfoCmd());
+  app.registerCommand(new InventoryCmd());
+  app.registerCommand(new AttackCmd());
 
   app.addBehavior(new ActivityBehavior());
   app.addBehavior(new UwUBanBehavior());

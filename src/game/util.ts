@@ -2,7 +2,7 @@
 
 import { PagedDatabase } from "../lib/db";
 import { getPlayerFieldId, PlayerData } from "../lib/types";
-import { MaterialData, ToolData } from "./item";
+import { ItemRegistry, MaterialData, ToolData } from "./item";
 import { getReqdExp } from "./level";
 
 export function mergeTools(a: ToolData, b: ToolData): ToolData {
@@ -32,6 +32,20 @@ export async function addMaterialToPlayer(pl: PlayerData, itemId: string, qty = 
   if(typeof idx === "number" && idx !== -1) {
     inventory[idx].amount += qty;
   }
+}
+
+export function newToolClean(items: ItemRegistry, id: string): ToolData {
+  const dat: ToolData = {
+    id: id,
+    rarity: items.tools[id].allowedRarity.reduce((a, b) => Math.max(a, b)),
+    merge: 1,
+    iv: {
+      atk: 0,
+      spd: 0,
+      cost: 0
+    }
+  };
+  return dat;
 }
 
 export async function addToolToPlayer(pl: PlayerData, tool: ToolData): Promise<void> {

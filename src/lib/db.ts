@@ -1,4 +1,6 @@
 import { Db, MongoClient, Collection, } from "mongodb";
+import { HighlightSpanKind } from "typescript";
+import { Mutex } from "./mutex";
 import { TemporaryStorage } from "./temporary";
 
 export type DBConfig = {
@@ -16,6 +18,7 @@ export interface IDatabaseObjectConverter<T> {
 
 export class PagedDatabase<T> {
   cache: TemporaryStorage<T>;
+  cacheMutex: Mutex;
   collection: Collection;
   converter: IDatabaseObjectConverter<T>;
   timeout: number;
@@ -24,6 +27,7 @@ export class PagedDatabase<T> {
     this.converter = converter;
     this.cache = new TemporaryStorage<T>();
     this.collection = coll;
+    this.cacheMutex = new Mutex();
   }
 
   async getEntry(id: string): Promise<T> {
@@ -39,6 +43,10 @@ export class PagedDatabase<T> {
     } else {
       obj = this.converter.fromJSON(fromDb);
     }
+    if(this.cacheMutex.ac) {
+      await this.cacheMutex.acquire();
+      this.cacheMutex.release();
+    }
     this.cache.addEntry(id, obj, this.timeout);
     this.cache.setFlushCallback(id, async (id: string) => {
       await this.flushEntry(id);
@@ -46,24 +54,30 @@ export class PagedDatabase<T> {
     return obj;
   }
 
-  async flushEntry(id: string): Promise<void> {
+  async flushEntry(id: string, acquire = true): Promise<void> {
     const entry = this.cache.getEntry(id);
     if(!entry) return;
+    if(acquire) await this.cacheMutex.acquire();
     delete this.cache.entries[id];
     // eslint-disable-next-line @typescript-eslint/ban-types
-    await this.collection.findOneAndReplace({ _id: id }, this.converter.toJSON(entry) as object);
+    await this.collection.findOneAndReplace({ _id: id }, this.converter.toJSON(entry) as object, { upsert: true });
+    if(acquire) this.cacheMutex.release();
   }
 
   async flushAll(): Promise<void> {
+    await this.cacheMutex.acquire();
     const keys = Object.keys(this.cache);
     for(let i = 0; i < keys.length; i++) {
-      this.flushEntry(keys[i]);
+      this.flushEntry(keys[i], false);
     }
+    this.cacheMutex.release();
   }
 
   async purgeEntry(id: string): Promise<void> {
+    await this.cacheMutex.acquire();
     delete this.cache.entries[id];
     await this.collection.findOneAndDelete({ _id: id });
+    this.cacheMutex.release();
   }
 }
 
