@@ -6,7 +6,6 @@ import { Command, CommandReturnType } from "./command";
 import { ConfigManager } from "./config";
 import { CommandExecContext, LoadExecContext } from "./context";
 import { Database, DBConfig, PagedDatabase } from "./db";
-import { GameManager } from "../game/manager";
 import { GuildData, GuildDataCvtr, PlayerData, PlayerDataCvtr } from "./types";
 
 // CommandReturnType is such a dumpster fire of type unions
@@ -37,7 +36,6 @@ export class Application {
   db: Database;
   guildDb: PagedDatabase<GuildData>;
   playerDb: PagedDatabase<PlayerData>;
-  game: GameManager;
   logs: Logger;
   commands: { [ id: string]: Command };
 
@@ -46,12 +44,10 @@ export class Application {
     this.config = new ConfigManager();
     this.logs = Logger.toStdout();
     this.commands = {};
-    this.game = new GameManager(this);
     this.logs.logInfo("Bot initialize");
   }
 
   async load(): Promise<void> {
-    await this.game.load();
     this.db = new Database(await this.config.load<DBConfig>("mongodb"), await this.config.loadToken("mongodb"));
     await this.db.load();
     this.guildDb = await this.db.loadDataset("guilds", new GuildDataCvtr());

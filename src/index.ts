@@ -12,9 +12,6 @@ import { VersionBehavior } from "./behavior/version";
 import { ActivityBehavior } from "./behavior/activity";
 import { UwUBanBehavior } from "./behavior/banuwu";
 import { PassivesBehavior } from "./behavior/passives";
-import { InfoCmd } from "./commands/info";
-import { InventoryCmd } from "./commands/inventory";
-import { AttackCmd } from "./commands/attack";
 import { SimdCmd } from "./commands/simd";
 
 async function main() {
@@ -28,9 +25,6 @@ async function main() {
   app.registerCommand(new PrefixCmd());
   app.registerCommand(new SudoCmd());
   app.registerCommand(new HelpCmd());
-  app.registerCommand(new InfoCmd());
-  app.registerCommand(new InventoryCmd());
-  app.registerCommand(new AttackCmd());
   app.registerCommand(new SimdCmd());
 
   app.addBehavior(new ActivityBehavior());

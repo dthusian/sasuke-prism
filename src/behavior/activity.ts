@@ -4,11 +4,10 @@ import { LoadExecContext } from "../lib/context";
 const games: [
   "PLAYING" | "WATCHING" | "LISTENING", string
 ][] = [
-  ["PLAYING", "Thaumcraft 4"],
-  ["PLAYING", "Visual Studio Code"],
   ["PLAYING", "Cytus 2"],
   ["PLAYING", "the bongcloud gambit"],
   ["WATCHING", "Earrape Microphone Tutorial"],
+  ["LISTENING", "true DJ MAG top ranker's song Zenpen (katagiri remix)"],
   ["LISTENING", "Datacenter ASMR"]
 ];
 

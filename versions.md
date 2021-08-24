@@ -1,7 +1,13 @@
+## v3.0.0
+
+First commit: TBD
+
+- Upon further rethinking, game is not going to be added to sasuke prism
+
 ## v2.3.0
 
 First commit: 95d093d570e940e24d935667747da9a46e0c6620 (master)
-Last commit: TBD
+Last commit: 4068b1277addf4e22d621d5cdbb10e2647fb9a6f (master)
 
 - Hotfix generating new database entries
 - Fix dronestriking code

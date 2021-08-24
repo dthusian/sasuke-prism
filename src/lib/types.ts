@@ -1,4 +1,3 @@
-import { MaterialData, ToolData } from "../game/item";
 import { IDatabaseObjectConverter } from "./db";
 
 export type DictOf<T> = { [key: string]: T };
@@ -14,16 +13,9 @@ export type PlayerData = {
   version: 2,
   stats: {
     level: number,
-    xp: number,
-    hp: number
+    xp: number
   },
-  timers: { [x: string]: number },
-  loadout: { 
-    mainhand: string | null,
-    armor: string | null
-  },
-  tools: ToolData[],
-  materials: MaterialData[]
+  timers: { [x: string]: number }
 }
 
 export class GuildDataCvtr implements IDatabaseObjectConverter<GuildData> {
@@ -82,16 +74,9 @@ export class PlayerDataCvtr implements IDatabaseObjectConverter<PlayerData> {
       version: 2,
       stats: {
         level: 1,
-        xp: 0,
-        hp: 1000
+        xp: 0
       },
-      timers: {},
-      loadout: {
-        mainhand: null,
-        armor: null
-      },
-      tools: [],
-      materials: []
+      timers: {}
     };
   }
 }

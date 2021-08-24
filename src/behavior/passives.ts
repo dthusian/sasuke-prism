@@ -1,8 +1,7 @@
 import { Behavior } from "../lib/behavior";
 import { LoadExecContext } from "../lib/context";
-import { getReqdExp } from "../game/level";
 import { getPlayerFieldId } from "../lib/types";
-import { addXpToPlayer } from "../game/util";
+import { getReqdExp, addXpToPlayer } from "../commands/level";
 
 const xpPassiveInterval = 1000 * 60 * 5; // 5 Minutes
 const xpPassiveIncreaseAmount = 5;

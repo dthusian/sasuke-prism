@@ -1,6 +1,6 @@
 {
   "title": "Absolute Value",
-  "description": ["Calculates the Absolute Value of each element inside the vector.",
+  "description": ["Calculates the Absolute Value of each element inside `a`, storing the results in `q`",
     "The Absolute Value of a number _n_ is defined the distance from 0 to the _n_ on a number line."],
   "intrinsics": [
     {

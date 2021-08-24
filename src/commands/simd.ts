@@ -4,6 +4,8 @@ import { CommandExecContext } from "../lib/context";
 import { parseSwitches } from "../lib/switches";
 import { makeHelpEmbed } from "./help";
 
+type SIMDDatatype = "i8" | "i16" | "i32" | "i64" | "f16" | "f32" | "f64";
+
 type TechsConfig = {
   [tech: string]: {
     name: string,
@@ -24,7 +26,7 @@ type OpConfig = {
   intrinsics: ({
     signature: string,
     vectorLength: number,
-    datatype: string,
+    datatype: SIMDDatatype,
     tech: string
   })[]
 };

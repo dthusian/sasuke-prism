@@ -1,6 +1,4 @@
 import { GuildMember, Message } from "discord.js";
-import { ItemRegistry } from "../game/item";
-import { GameManager } from "../game/manager";
 import { Application } from "./app";
 import { Command } from "./command";
 import { PlayerData, GuildData, getPlayerFieldId } from "./types";
@@ -42,12 +40,6 @@ export class CommandExecContext {
     } else {
       throw new Error("Unreachable");
     }
-  }
-  getGame(): GameManager {
-    return this.app.game;
-  }
-  getItemManager(): ItemRegistry {
-    return this.app.game.items;
   }
   async getConfig<T>(name: string): Promise<T> {
     return await this.app.config.load<T>(name);

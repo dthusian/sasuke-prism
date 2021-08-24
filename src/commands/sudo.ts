@@ -1,5 +1,4 @@
 import { GuildMember } from "discord.js";
-import { addMaterialToPlayer, addToolToPlayer, newToolClean } from "../game/util";
 import { Command, HelpMessage } from "../lib/command";
 import { CommandExecContext } from "../lib/context";
 
@@ -60,14 +59,6 @@ export class SudoCmd extends Command {
       case "gcstat": {
         const bytes = process.memoryUsage().heapUsed.toString();
         return bytes + " bytes";
-      }
-      case "debugitem": {
-        addMaterialToPlayer(await ctx.getPlayerData(), "test", 1);
-        return null;
-      }
-      case "debugtool": {
-        addToolToPlayer(await ctx.getPlayerData(), newToolClean(ctx.getItemManager(), "test_tool"));
-        return null;
       }
       case "flush": {
         return null;

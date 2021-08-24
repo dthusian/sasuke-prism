@@ -1,7 +1,25 @@
-import { Db, MongoClient, Collection, } from "mongodb";
-import { HighlightSpanKind } from "typescript";
+import { Database as SQLiteDatabase, RunResult } from "sqlite3";
 import { Mutex } from "./mutex";
 import { TemporaryStorage } from "./temporary";
+
+function runSqlAsync(db: SQLiteDatabase, query: string, params: any[] = []): Promise<RunResult> {
+  return new Promise((resolve, reject) => {
+    db.run(query, params, (err: Error | null) => {
+      if(err) reject(err);
+      resolve(this);
+    });
+  });
+}
+
+function getRowAsync(res: RunResult): Promise<object> {
+  return new Promise((resolve, reject) => {
+    res.get((err, row) => {
+      if(err) reject(err);
+      console.log(row);
+      resolve(row.json);
+    });
+  });
+}
 
 export type DBConfig = {
   userName: string,
@@ -17,17 +35,19 @@ export interface IDatabaseObjectConverter<T> {
 }
 
 export class PagedDatabase<T> {
+  db: SQLiteDatabase;
   cache: TemporaryStorage<T>;
   cacheMutex: Mutex;
-  collection: Collection;
+  table: string;
   converter: IDatabaseObjectConverter<T>;
   timeout: number;
 
-  constructor(converter: IDatabaseObjectConverter<T>, coll: Collection) {
-    this.converter = converter;
+  constructor(converter: IDatabaseObjectConverter<T>, db: SQLiteDatabase, table: string) {
+    this.db = db;
     this.cache = new TemporaryStorage<T>();
-    this.collection = coll;
     this.cacheMutex = new Mutex();
+    this.table = table;
+    this.converter = converter;
   }
 
   async getEntry(id: string): Promise<T> {
@@ -36,7 +56,7 @@ export class PagedDatabase<T> {
       this.cache.refreshEntry(id, this.timeout);
       return maybeEntry;
     }
-    const fromDb = await this.collection.findOne({ _id: id });
+    const fromDb = await getRowAsync(await runSqlAsync(this.db, "SELECT json FROM ? WHERE id = ?", [this.table, id]));
     let obj;
     if(!fromDb) {
       obj = this.converter.newObject(id);
@@ -60,7 +80,7 @@ export class PagedDatabase<T> {
     if(acquire) await this.cacheMutex.acquire();
     delete this.cache.entries[id];
     // eslint-disable-next-line @typescript-eslint/ban-types
-    await this.collection.findOneAndReplace({ _id: id }, this.converter.toJSON(entry) as object, { upsert: true });
+    await runSqlAsync(this.db, "INSERT INTO ? (json) VALUES ? WHERE id = ?", [this.table, JSON.stringify(this.converter.toJSON(entry)), id]);
     if(acquire) this.cacheMutex.release();
   }
 
@@ -76,31 +96,29 @@ export class PagedDatabase<T> {
   async purgeEntry(id: string): Promise<void> {
     await this.cacheMutex.acquire();
     delete this.cache.entries[id];
-    await this.collection.findOneAndDelete({ _id: id });
+    await runSqlAsync(this.db, "DELETE FROM ? WHERE id = ?", [this.table, id]);
     this.cacheMutex.release();
   }
 }
 
 export class Database {
-  client: MongoClient;
-  db: Db;
+  db: SQLiteDatabase;
   config: DBConfig;
 
   constructor(config: DBConfig, token: string) {
     this.config = config;
-    this.client = new MongoClient(
-      `mongodb://${encodeURIComponent(config.userName)}:${encodeURIComponent(token)}@${config.host}/?authMechanism=${config.authType}`, {
-        authSource: config.dbName,
-        useUnifiedTopology: true
-      });
+    
   }
 
   async load(): Promise<void> {
-    await this.client.connect();
-    this.db = this.client.db(this.config.dbName);
+    this.db = new SQLiteDatabase("../data.sqlite");
+    await (new Promise((resolve, reject) => {
+      this.db.on("open", resolve);
+      this.db.on("error", reject);
+    }));
   }
 
   async loadDataset<T>(id: string, cvt: IDatabaseObjectConverter<T>): Promise<PagedDatabase<T>> {
-    return new PagedDatabase<T>(cvt, await this.db.collection(id));
+    return new PagedDatabase<T>(cvt, this.db, id);
   }
 }

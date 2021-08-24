@@ -25,5 +25,6 @@
   "avx512_vbmi2": { "name": "AVX-512_VBMI2", "requires": ["avx512vbmi"] },
   "avx512_vnni": { "name": "AVX-512_VNNI", "requires": ["avx512f"] },
   "avx512_vp2intersect": { "name": "AVX-512_VP2INTERSECT", "requires": ["avx512f"] },
-  "avx512_vpclmulqdq": { "name": "AVX-512-VPCLMULQDQ", "requires": ["avx512f"] }
+  "avx512_vpclmulqdq": { "name": "AVX-512_VPCLMULQDQ", "requires": ["avx512f"] },
+  "avx512_fp16": { "name": "AVX-512_FP16", "requires": ["avx512f"] }
 }
