@@ -1,9 +1,0 @@
-{
-  "name": "Test Tool",
-  "description": "This is a test tool",
-  "class": "melee",
-  "allowedRarity": [2, 4, 5],
-  "recipe": {
-    "test": 3
-  }
-}

@@ -3,6 +3,9 @@
 First commit: TBD
 
 - Upon further rethinking, game is not going to be added to sasuke prism
+- Rewrote database engine to use SQLite
+  - MongoDB is a pain to setup for applications that's not enterprise scaled
+- Adding more JSON to SIMD
 
 ## v2.3.0
 

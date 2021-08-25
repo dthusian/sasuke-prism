@@ -7,6 +7,8 @@ import { ConfigManager } from "./config";
 import { CommandExecContext, LoadExecContext } from "./context";
 import { Database, DBConfig, PagedDatabase } from "./db";
 import { GuildData, GuildDataCvtr, PlayerData, PlayerDataCvtr } from "./types";
+import { copyFile, stat } from "fs/promises";
+import { join } from "path";
 
 // CommandReturnType is such a dumpster fire of type unions
 async function resolveAndSendEmbeds(channel: TextChannel | DMChannel | NewsChannel, ret: CommandReturnType) {
@@ -48,11 +50,21 @@ export class Application {
   }
 
   async load(): Promise<void> {
-    this.db = new Database(await this.config.load<DBConfig>("mongodb"), await this.config.loadToken("mongodb"));
+    const dbconf = await this.config.load<DBConfig>("sqlite");
+    try {
+      await stat(join("./", dbconf.filepath));
+    } catch(err) {
+      if(err.code === "ENOENT") {
+        this.logs.logInfo("No database found. Creating a default...");
+        await copyFile("./static/assets/data.sqlite", join("./", dbconf.filepath));
+      } else {
+        throw err;
+      }
+    }
+    this.db = new Database(this.logs, dbconf);
     await this.db.load();
     this.guildDb = await this.db.loadDataset("guilds", new GuildDataCvtr());
     this.playerDb = await this.db.loadDataset("players", new PlayerDataCvtr());
-    this.logs.logInfo("Connected to MongoDB [" + this.db.config.host + "]");
     this.bot.on("message", async msg => {
       // Validate message
       if(!(msg.guild && !msg.author.bot && msg.content)) return;
@@ -101,6 +113,6 @@ export class Application {
   }
 
   getVersion(): string {
-    return "2.3";
+    return "3.0";
   }
 }

@@ -10,7 +10,7 @@
       ],
       "preLaunchTask": "npm: build",
       "program": "${workspaceFolder}/bin/index.js",
-      "runtimeArgs": ["--unhandled-rejections=strict"],
+      "args": ["--debug"],
       "cwd": "${workspaceFolder}/bin/"
     }
   ]

@@ -1,6 +1,0 @@
-{
-  "userName": "sasuke_prism",
-  "host": "192.168.0.71:27017",
-  "authType": "SCRAM-SHA-256",
-  "dbName": "sasuke_prism"
-}

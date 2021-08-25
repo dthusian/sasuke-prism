@@ -14,7 +14,14 @@ import { UwUBanBehavior } from "./behavior/banuwu";
 import { PassivesBehavior } from "./behavior/passives";
 import { SimdCmd } from "./commands/simd";
 
-async function main() {
+async function main(argv: string[]) {
+  if(argv[0] === "--debug") {
+    process.on("unhandledRejection", err => {
+      console.log(err);
+      throw err;
+    });
+  }
+
   const app = new Application();
   await app.load();
 
@@ -35,4 +42,4 @@ async function main() {
   await app.execute();
 }
 
-main();
+main(process.argv.slice(2));

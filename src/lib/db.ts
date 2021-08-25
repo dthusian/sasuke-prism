@@ -1,31 +1,31 @@
-import { Database as SQLiteDatabase, RunResult } from "sqlite3";
+import { Database as SQLiteDatabase, RunResult, Statement } from "sqlite3";
+import { Logger } from "./logger";
 import { Mutex } from "./mutex";
 import { TemporaryStorage } from "./temporary";
 
-function runSqlAsync(db: SQLiteDatabase, query: string, params: any[] = []): Promise<RunResult> {
+function runSqlAsync(query: Statement, params: any[] = []): Promise<RunResult> {
   return new Promise((resolve, reject) => {
-    db.run(query, params, (err: Error | null) => {
+    query.run(params, function(err: Error | null) {
       if(err) reject(err);
       resolve(this);
     });
   });
 }
 
-function getRowAsync(res: RunResult): Promise<object> {
+function getRowAsync(query: Statement, params: any[] = []): Promise<object | undefined> {
   return new Promise((resolve, reject) => {
-    res.get((err, row) => {
+    query.get(params, (err, row) => {
       if(err) reject(err);
-      console.log(row);
-      resolve(row.json);
+      if(!row) resolve(undefined);
+      else {
+        resolve(JSON.parse(row.json));
+      }
     });
   });
 }
 
 export type DBConfig = {
-  userName: string,
-  host: string,
-  dbName: string,
-  authType: string
+  filepath: string
 };
 
 export interface IDatabaseObjectConverter<T> {
@@ -41,6 +41,10 @@ export class PagedDatabase<T> {
   table: string;
   converter: IDatabaseObjectConverter<T>;
   timeout: number;
+  statementGetPlayer: Statement;
+  statementUpdatePlayer: Statement;
+  statementNewPlayer: Statement;
+  statementPurgePlayer: Statement;
 
   constructor(converter: IDatabaseObjectConverter<T>, db: SQLiteDatabase, table: string) {
     this.db = db;
@@ -48,6 +52,20 @@ export class PagedDatabase<T> {
     this.cacheMutex = new Mutex();
     this.table = table;
     this.converter = converter;
+    // No SQLi here :blobcomfy:
+    // Table names are hardcoded and never user-input
+    this.statementGetPlayer = db.prepare(`SELECT json FROM ${table} WHERE id = ?`, err => {
+      if(err) throw err;
+    });
+    this.statementNewPlayer = db.prepare(`INSERT INTO ${table} (id, json) VALUES (?, ?)`, err => {
+      if(err) throw err;
+    });
+    this.statementUpdatePlayer = db.prepare(`UPDATE ${table} SET json = ? WHERE id = ?`, err => {
+      if(err) throw err;
+    })
+    this.statementPurgePlayer = db.prepare(`DELETE FROM ${table} WHERE id = ?`, err => {
+      if(err) throw err;
+    });
   }
 
   async getEntry(id: string): Promise<T> {
@@ -56,10 +74,15 @@ export class PagedDatabase<T> {
       this.cache.refreshEntry(id, this.timeout);
       return maybeEntry;
     }
-    const fromDb = await getRowAsync(await runSqlAsync(this.db, "SELECT json FROM ? WHERE id = ?", [this.table, id]));
+    const fromDb = await getRowAsync(this.statementGetPlayer, [id]);
     let obj;
     if(!fromDb) {
       obj = this.converter.newObject(id);
+      try {
+        await runSqlAsync(this.statementNewPlayer, [id, obj]);
+      } catch(err) {
+        if(!err.message.contains("UNIQUE constraint")) throw err;
+      }
     } else {
       obj = this.converter.fromJSON(fromDb);
     }
@@ -79,8 +102,7 @@ export class PagedDatabase<T> {
     if(!entry) return;
     if(acquire) await this.cacheMutex.acquire();
     delete this.cache.entries[id];
-    // eslint-disable-next-line @typescript-eslint/ban-types
-    await runSqlAsync(this.db, "INSERT INTO ? (json) VALUES ? WHERE id = ?", [this.table, JSON.stringify(this.converter.toJSON(entry)), id]);
+    await runSqlAsync(this.statementUpdatePlayer, [JSON.stringify(this.converter.toJSON(entry)), id]);
     if(acquire) this.cacheMutex.release();
   }
 
@@ -96,7 +118,7 @@ export class PagedDatabase<T> {
   async purgeEntry(id: string): Promise<void> {
     await this.cacheMutex.acquire();
     delete this.cache.entries[id];
-    await runSqlAsync(this.db, "DELETE FROM ? WHERE id = ?", [this.table, id]);
+    await runSqlAsync(this.statementPurgePlayer, [id]);
     this.cacheMutex.release();
   }
 }
@@ -104,18 +126,24 @@ export class PagedDatabase<T> {
 export class Database {
   db: SQLiteDatabase;
   config: DBConfig;
+  logs: Logger;
 
-  constructor(config: DBConfig, token: string) {
+  constructor(logs: Logger, config: DBConfig) {
+    this.logs = logs;
     this.config = config;
-    
   }
 
   async load(): Promise<void> {
-    this.db = new SQLiteDatabase("../data.sqlite");
-    await (new Promise((resolve, reject) => {
-      this.db.on("open", resolve);
-      this.db.on("error", reject);
+    await (new Promise<void>((resolve, reject) => {
+      this.db = new SQLiteDatabase(this.config.filepath || "../data.sqlite", err => {
+        if(err) reject(err);
+      });
+      let resolved = false;
+      this.db.on("open", () => { resolved = true; resolve(); });
     }));
+    this.db.on("error", err => {
+      this.logs.logError("SQLite Error: " + err.message);
+    });
   }
 
   async loadDataset<T>(id: string, cvt: IDatabaseObjectConverter<T>): Promise<PagedDatabase<T>> {

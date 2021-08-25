@@ -1,0 +1,27 @@
+{
+  "title": "Add with Rounding",
+  "description": [
+    "Adds each element in `a` with each element in `b`, storing the results in `q`",
+    "Rounds results according to the rounding argument (can be one of _MM_FROUND_TO_NEAREST_INT,",
+    "_MM_FROUND_TO_NEG_INF, _MM_FROUND_TO_POS_INF, _MM_FROUND_TO_ZERO)"],
+  "intrinsics": [
+    {
+      "signature": "__m512h _mm512_add_round_ph (__m512h a, __m512h b, int rounding)",
+      "vectorLength": 512,
+      "datatype": "f16",
+      "tech": "avx512_fp16"
+    },
+    {
+      "signature": "__m512 _mm512_add_round_ps (__m512 a, __m512 b, int rounding)",
+      "vectorLength": 512,
+      "datatype": "f32",
+      "tech": "avx512f"
+    },
+    {
+      "signature": "__m512d _mm512_add_round_pd (__m512d a, __m512d b, int rounding)",
+      "vectorLength": 512,
+      "datatype": "f64",
+      "tech": "avx512f"
+    }
+  ]
+}
