@@ -1,4 +1,4 @@
-import { TextChannel, Client, MessageEmbed, DMChannel, NewsChannel } from "discord.js";
+import { TextChannel, Client, MessageEmbed, DMChannel, NewsChannel, Intents, PartialGroupDMChannel, GuildChannel } from "discord.js";
 import { Logger } from "./logger";
 import { Behavior } from "./behavior";
 
@@ -27,7 +27,11 @@ async function resolveAndSendEmbeds(channel: TextChannel | DMChannel | NewsChann
   const cleanArray = resolvedArray.filter(v => v) as (MessageEmbed | string)[];
   await Promise.all(cleanArray.map(async v => {
     try {
-      await channel.send(v);
+      if(typeof v === "string") {
+        await channel.send({ content: v });
+      } else {
+        await channel.send({ embeds: [v] });
+      }
     } catch(e) { return; }
   }));
 }
@@ -42,7 +46,12 @@ export class Application {
   commands: { [ id: string]: Command };
 
   constructor(){
-    this.bot = new Client();
+    const intents = new Intents();
+    intents.add(Intents.FLAGS.GUILDS);
+    intents.add(Intents.FLAGS.GUILD_MESSAGES);
+    this.bot = new Client({
+      intents: intents
+    });
     this.config = new ConfigManager();
     this.logs = Logger.toStdout();
     this.commands = {};
@@ -81,7 +90,8 @@ export class Application {
       const cmd = this.commands[commandName];
       try {
         const embed = cmd.onCommand(args.slice(1), new CommandExecContext(this, cmd, msg));
-        await resolveAndSendEmbeds(msg.channel, embed);
+        if(msg.channel instanceof TextChannel)
+          await resolveAndSendEmbeds(msg.channel, embed);
       } catch(err: unknown) {
         this.logs.logError("Unhandled exception in command handler");
         if(err instanceof Error) {

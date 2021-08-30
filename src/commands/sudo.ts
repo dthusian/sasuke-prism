@@ -26,7 +26,7 @@ export class SudoCmd extends Command {
   async onCommand(args: string[], ctx: CommandExecContext): Promise<string | string[] | null> {
     if(!ctx.msg.guild) return null;
     const guild = ctx.msg.guild;
-    const gauthor = guild.member(ctx.msg.author);
+    const gauthor = await guild.members.fetch(ctx.msg.author);
     if(!gauthor) return null;
     if(!isSudoer(gauthor)) {
       return `${gauthor.displayName} is not in the sudoers file.\nThis incident will be reported.`;
@@ -38,8 +38,8 @@ export class SudoCmd extends Command {
         if(!mentions.members) {
           return "Specify a user.";
         }
-        const members = mentions.members.array();
-        if(!members.length) {
+        const members = mentions.members;
+        if(!members.size) {
           return "Specify a user.";
         }
         const bans = members.map(async v => {

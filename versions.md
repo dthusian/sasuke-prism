@@ -6,6 +6,7 @@ First commit: TBD
 - Rewrote database engine to use SQLite
   - MongoDB is a pain to setup for applications that's not enterprise scaled
 - Adding more JSON to SIMD
+- Bump discord.js, typescript, and required node.js versions
 
 ## v2.3.0
 

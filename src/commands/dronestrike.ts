@@ -1,5 +1,4 @@
-import { Guild, MessageEmbed, TextChannel, Webhook } from "discord.js";
-import { PassThrough } from "form-data";
+import { Guild, MessageEmbed, MessageOptions, TextChannel, Webhook } from "discord.js";
 import { Application } from "../lib/app";
 import { Command, HelpMessage } from "../lib/command";
 import { CommandExecContext } from "../lib/context";
@@ -39,7 +38,14 @@ export class Dronestrike {
     for(let i = 0; i < whList.length; i++) {
       if(whList[i]){
         try {
-          proms.push(whList[i].send(content())
+          const recvContent = content();
+          let sendobj: MessageOptions;
+          if(recvContent instanceof MessageEmbed) {
+            sendobj = { embeds: [recvContent] };
+          } else {
+            sendobj = { content: recvContent };
+          }
+          proms.push(whList[i].send(sendobj)
           .then(increFired)
           .catch(() => {
             delete whList[i];
@@ -54,16 +60,16 @@ export class Dronestrike {
   async run(): Promise<string | void> {
     if(!this.targetGuild) return;
     if(this.app.bot.user === null) return;
-    const gmember = this.targetGuild.member(this.app.bot.user);
+    const gmember = await this.targetGuild.members.fetch(this.app.bot.user);
     if(gmember === null) return;
     const hasPerm = gmember.permissions.has("MANAGE_WEBHOOKS");
     if(!hasPerm) return "Not enough permissions.";
     ongoingDronestrikes[this.targetGuild.id] = this;
     const prom = new Promise<void>(resolve => {
       const guild = this.targetGuild;
-      Promise.all(guild.channels.cache.array().map(async v => {
+      Promise.all(guild.channels.cache.map(async v => {
         if(v instanceof TextChannel && !this.ignoreChannels.includes(v.id)) {
-          const hooks = (await v.fetchWebhooks()).array();
+          const hooks = Array.from(await v.fetchWebhooks()).map(v => v[1]);
           for(let i = hooks.length; i < DISCORD_MAX_WEBHOOKS; i++) {
             try {
               hooks.push(await v.createWebhook("Attack Helicopter " + (globalDroneFactory++), {

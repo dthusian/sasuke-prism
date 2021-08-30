@@ -13,6 +13,7 @@ import { ActivityBehavior } from "./behavior/activity";
 import { UwUBanBehavior } from "./behavior/banuwu";
 import { PassivesBehavior } from "./behavior/passives";
 import { SimdCmd } from "./commands/simd";
+import { WysiBehavior } from "./behavior/wysi";
 
 async function main(argv: string[]) {
   if(argv[0] === "--debug") {
@@ -38,6 +39,7 @@ async function main(argv: string[]) {
   app.addBehavior(new UwUBanBehavior());
   app.addBehavior(new PassivesBehavior());
   app.addBehavior(new VersionBehavior());
+  app.addBehavior(new WysiBehavior());
 
   await app.execute();
 }

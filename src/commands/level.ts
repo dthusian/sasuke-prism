@@ -59,7 +59,7 @@ export class LevelCmd extends Command {
     const player = ctx.msg.author;
     embed.setTitle(`${getTitleFromLevel(pdata.stats.level)} ${player.username}`);
     embed.setColor(await ctx.getConfigColor("level"));
-    embed.addField("Level", pdata.stats.level, true);
+    embed.addField("Level", pdata.stats.level.toString(), true);
     const xp = pdata.stats.xp;
     const xpReq = getReqdExp(pdata.stats.level);
     let xpStr = "";

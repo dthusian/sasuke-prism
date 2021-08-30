@@ -31,7 +31,7 @@ export class VersionBehavior extends Behavior {
         ignoreRoles: true,
         ignoreEveryone: true
       }) && msg.guild) {
-        await msg.channel.send(await makeGeneralHelpEmbed(ctx.hostApp, msg.guild.id));
+        await msg.channel.send({ embeds: [await makeGeneralHelpEmbed(ctx.hostApp, msg.guild.id)] });
       }
     });
   }

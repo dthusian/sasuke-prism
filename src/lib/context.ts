@@ -29,9 +29,9 @@ export class CommandExecContext {
       return await this.app.playerDb.getEntry(getPlayerFieldId(this.msg.guild.id, this.msg.author.id));
     throw new Error("Unreachable");
   }
-  getSender(): GuildMember {
+  async getSender(): Promise<GuildMember> {
     if(this.msg.guild) {
-      const maybeMember = this.msg.guild.member(this.msg.author);
+      const maybeMember = await this.msg.guild.members.fetch(this.msg.author);
       if(maybeMember) {
         return maybeMember;
       } else {
