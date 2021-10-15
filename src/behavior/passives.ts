@@ -10,7 +10,7 @@ export class PassivesBehavior extends Behavior {
   load(ctx: LoadExecContext): void {
     const bot = ctx.hostApp.bot;
     const db = ctx.hostApp.playerDb;
-    bot.on("message", async msg => {
+    bot.on("messageCreate", async msg => {
       if(msg.author.bot) return;
       if(!msg.guild) return;
       const pl = await db.getEntry(getPlayerFieldId(msg.guild.id, msg.author.id));

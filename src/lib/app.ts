@@ -1,4 +1,4 @@
-import { TextChannel, Client, MessageEmbed, DMChannel, NewsChannel, Intents, PartialGroupDMChannel, GuildChannel } from "discord.js";
+import { TextChannel, Client, MessageEmbed, DMChannel, NewsChannel, Intents } from "discord.js";
 import { Logger } from "./logger";
 import { Behavior } from "./behavior";
 
@@ -74,7 +74,7 @@ export class Application {
     await this.db.load();
     this.guildDb = await this.db.loadDataset("guilds", new GuildDataCvtr());
     this.playerDb = await this.db.loadDataset("players", new PlayerDataCvtr());
-    this.bot.on("message", async msg => {
+    this.bot.on("messageCreate", async msg => {
       // Validate message
       if(!(msg.guild && !msg.author.bot && msg.content)) return;
 

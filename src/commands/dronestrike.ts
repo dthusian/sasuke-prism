@@ -12,6 +12,7 @@ export class Dronestrike {
   // Configable stuff
   contentFactory: () => (string | MessageEmbed);
   maxDrones: number;
+  maxShots: number;
   avatar: string;
   targetGuild: Guild;
   ignoreChannels: string[];
@@ -20,6 +21,7 @@ export class Dronestrike {
   app: Application;
   constructor(app: Application) {
     this.maxDrones = Infinity;
+    this.maxShots = Infinity;
     this.app = app;
     this.fired = 0;
     this.ignoreChannels = [];
@@ -89,11 +91,14 @@ export class Dronestrike {
           if(fullhooklist.filter(v => v).length === 0) {
             endStrike();
           }
+          if(this.fired > this.maxShots) {
+            endStrike();
+          }
         }, 7000);
         const endStrike = () => {
           clearInterval(interval);
           resolve();
-          ongoingDronestrikes[this.targetGuild.id] = null;
+          delete ongoingDronestrikes[this.targetGuild.id];
         }
         setTimeout(endStrike, 1000000);
       });
@@ -140,6 +145,7 @@ export class DronestrikeCmd extends Command {
         dronestrike.contentFactory = () => message;
         dronestrike.targetGuild = ctx.msg.guild;
         dronestrike.ignoreChannels = [ctx.msg.channel.id];
+        dronestrike.maxShots = 1000;
         dronestrike.run();
         return "Dronestrike authorized.";
       }

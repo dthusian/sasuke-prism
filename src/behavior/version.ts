@@ -25,7 +25,7 @@ export async function makeGeneralHelpEmbed(hostApp: Application, gid: string): P
 export class VersionBehavior extends Behavior {
   load(ctx: LoadExecContext): void {
     const bot = ctx.hostApp.bot;
-    bot.on("message", async msg => {
+    bot.on("messageCreate", async msg => {
       if (!bot.user) throw new Error("What? Contact dev");
       if (msg.mentions.has(bot.user, {
         ignoreRoles: true,

@@ -42,6 +42,12 @@ export class TemporaryStorage<T> {
   refreshEntry(id: string, ms: number): void {
     this.entries[id].refresh(this, id, ms);
   }
+  setEntry(id: string, obj: T): void {
+    this.entries[id].object = obj;
+  }
+  deleteEntry(id: string): void {
+    delete this.entries[id];
+  }
   setFlushCallback(id: string, cb: FlushCallback<T>): void {
     this.entries[id].callback = cb;
   }

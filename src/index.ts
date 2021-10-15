@@ -14,6 +14,7 @@ import { UwUBanBehavior } from "./behavior/banuwu";
 import { PassivesBehavior } from "./behavior/passives";
 import { SimdCmd } from "./commands/simd";
 import { WysiBehavior } from "./behavior/wysi";
+import { ChainBehavior } from "./behavior/chain";
 
 async function main(argv: string[]) {
   if(argv[0] === "--debug") {
@@ -40,6 +41,7 @@ async function main(argv: string[]) {
   app.addBehavior(new PassivesBehavior());
   app.addBehavior(new VersionBehavior());
   app.addBehavior(new WysiBehavior());
+  app.addBehavior(new ChainBehavior());
 
   await app.execute();
 }

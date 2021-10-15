@@ -24,10 +24,10 @@ function scanMessage(msg: Message): boolean {
 
 export class WysiBehavior extends Behavior {
   load(ctx: LoadExecContext): void {
-    ctx.hostApp.bot.on("message", msg => {
+    ctx.hostApp.bot.on("messageCreate", msg => {
       if(scanMessage(msg)) {
         msg.channel.send({ content: "wysi", reply: { messageReference: msg, failIfNotExists: false }});
       }
     });
   }
-};
+}
