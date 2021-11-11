@@ -1,40 +1,14 @@
-import { TextChannel, Client, MessageEmbed, DMChannel, NewsChannel, Intents } from "discord.js";
+import { TextChannel, Client, MessageEmbed, DMChannel, NewsChannel, Intents, MessageInteraction, CommandInteraction, Message } from "discord.js";
 import { Logger } from "./logger";
 import { Behavior } from "./behavior";
 
-import { Command, CommandReturnType } from "./command";
+import { Command, CommandGroup } from "./command";
 import { ConfigManager } from "./config";
-import { CommandExecContext, LoadExecContext } from "./context";
+import { CommandExecContext, LoadExecContext, UserError } from "./context";
 import { Database, DBConfig, PagedDatabase } from "./db";
 import { GuildData, GuildDataCvtr, PlayerData, PlayerDataCvtr } from "./types";
 import { copyFile, stat } from "fs/promises";
 import { join } from "path";
-
-// CommandReturnType is such a dumpster fire of type unions
-async function resolveAndSendEmbeds(channel: TextChannel | DMChannel | NewsChannel, ret: CommandReturnType) {
-  let resolvedProm: (MessageEmbed | string | null)[] | (MessageEmbed | string | null);
-  if(ret instanceof Promise) {
-    resolvedProm = await ret;
-  } else {
-    resolvedProm = ret;
-  }
-  let resolvedArray: (MessageEmbed | string | null)[];
-  if(resolvedProm instanceof Array) {
-    resolvedArray = resolvedProm;
-  } else {
-    resolvedArray = [resolvedProm];
-  }
-  const cleanArray = resolvedArray.filter(v => v) as (MessageEmbed | string)[];
-  await Promise.all(cleanArray.map(async v => {
-    try {
-      if(typeof v === "string") {
-        await channel.send({ content: v });
-      } else {
-        await channel.send({ embeds: [v] });
-      }
-    } catch(e) { return; }
-  }));
-}
 
 export class Application {
   bot: Client;
@@ -43,7 +17,7 @@ export class Application {
   guildDb: PagedDatabase<GuildData>;
   playerDb: PagedDatabase<PlayerData>;
   logs: Logger;
-  commands: { [ id: string]: Command };
+  commands: { [ id: string]: Command | CommandGroup };
 
   constructor(){
     const intents = new Intents();
@@ -87,25 +61,52 @@ export class Application {
       if(!this.commands[commandName]) return;
 
       // Run the command
-      const cmd = this.commands[commandName];
-      try {
-        const embed = cmd.onCommand(args.slice(1), new CommandExecContext(this, cmd, msg));
-        if(msg.channel instanceof TextChannel)
-          await resolveAndSendEmbeds(msg.channel, embed);
-      } catch(err: unknown) {
-        this.logs.logError("Unhandled exception in command handler");
-        if(err instanceof Error) {
-          this.logs.logError(err.name + ": " + err.message);
-          if(err.stack)
-            this.logs.logError(err.stack);
-        } else {
-          this.logs.logError("An error object was not found");
+      let sliceIdx = 1;
+      let cmd = this.commands[commandName];
+      if(cmd instanceof CommandGroup) {
+        const find = cmd.commands.find(v => v.getCommandString().includes(args[sliceIdx]));
+        if(find === undefined) {
+          await msg.channel.send(":x: Unknown subcommand");
+          return;
         }
-      } 
+        cmd = find;
+        sliceIdx++;
+      }
+      await this._runCommand(cmd, msg, args.slice(sliceIdx).join(" "))
+    });
+    this.bot.on("interactionCreate", interaction => {
+      //TODO stub
     });
     this.bot.on("ready", () => {
       this.logs.logInfo("Connected to Discord");
     });
+  }
+
+  private async _runCommand(cmd: Command, msg: Message | CommandInteraction, args: string | undefined) {
+    try {
+      if(msg instanceof Message && typeof args === "string") {
+        cmd.onCommand(new CommandExecContext(this, cmd, msg, args));
+      } else if(msg instanceof CommandInteraction) {
+        cmd.onCommand(new CommandExecContext(this, cmd, msg));
+      } else {
+        throw new Error("Unreachable");
+      }
+    } catch(err: unknown) {
+      this.logs.logError("Unhandled exception in command handler");
+      if(err instanceof UserError) {
+        if(msg instanceof Message) {
+          await msg.channel.send(":x: " + err.message);
+        } else {
+          await msg.reply(":x: " + err.message);
+        }
+      } else if(err instanceof Error) {
+        this.logs.logError(err.name + ": " + err.message);
+        if(err.stack)
+          this.logs.logError(err.stack);
+      } else {
+        this.logs.logError("An error object was not found");
+      }
+    }
   }
 
   async registerCommand(cmd: Command): Promise<void> {

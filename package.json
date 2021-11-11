@@ -4,6 +4,7 @@
   "description": "",
   "main": "./bin/index.js",
   "dependencies": {
+    "@discordjs/builders": "^0.8.2",
     "discord.js": "^13.2.0",
     "form-data": "^3.0.0",
     "fs-extra": "^9.0.1",

@@ -6,8 +6,16 @@ const games: [
 ][] = [
   ["PLAYING", "Cytus 2"],
   ["PLAYING", "the bongcloud gambit"],
+  ["PLAYING", "Spelunky 2"],
+  ["PLAYING", "Team Fortress 2"],
   ["WATCHING", "Earrape Microphone Tutorial"],
-  ["LISTENING", "true DJ MAG top ranker's song Zenpen (katagiri remix)"],
+  ["WATCHING", "mINCERAGT 69 hUNErt sv SPedrn ER"],
+  ["WATCHING", "paint dry"],
+  ["WATCHING", "[NFT] free money glitch 2021 working"],
+  ["WATCHING", "ur mom"],
+  ["LISTENING", "sabi - true DJ MAG top ranker's song Zenpen (katagiri remix)"],
+  ["LISTENING", "DJ Army - Play"],
+  ["LISTENING", "Frums - Xnor Xnor Xnor"],
   ["LISTENING", "Datacenter ASMR"]
 ];
 

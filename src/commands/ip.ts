@@ -49,10 +49,10 @@ export class IPCmd extends Command {
       message: "Retrieves some information about an IP address. Any number of IP addresses can be specified, each of them are retrieved separately."
     };
   }
-  async onCommand(args: string[], ctx: CommandExecContext): Promise<(MessageEmbed | null)[] | null> {
+  async onCommand(args: string[], ctx: CommandExecContext): Promise<(MessageEmbed | null)[] | string | null> {
     const key = await ctx.getConfigToken("ipdata");
     const color = await ctx.getConfigColor("embedTypeInfo");
-    if(!canSendReq(this)) return null;
+    if(!canSendReq(this)) return "Rate limited";
     const vals = await Promise.all(args.map(async v => {
       if(v.match(/^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/)) {
         const res = await fetch(`https://api.ipdata.co/${encodeURIComponent(v)}?api-key=${key}`);

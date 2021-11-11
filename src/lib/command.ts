@@ -1,15 +1,29 @@
-import { MessageEmbed } from "discord.js";
 import { CommandExecContext, LoadExecContext } from "./context";
 
-type PossiblyAsync<T> = Promise<T> | T;
-type PossiblyArray<T> = T[] | T;
-type MessageContent = MessageEmbed | string | null;
-export type CommandReturnType = PossiblyAsync<PossiblyArray<MessageContent> >;
 export type HelpMessage = { syntax: string | string[], message: string, example: string | string[] };
 
+export class CommandGroup {
+  commandString: string[];
+  commands: Command[];
+  constructor(cstr: string[], cmds: Command[]) {
+    this.commandString = cstr;
+    this.commands = cmds;
+  }
+  getCommandString(): string[] {
+    return this.commandString;
+  }
+}
+
+export type CommandArguments = ({
+  name: string,
+  type: "string" | "number" | "boolean" | "user",
+  required: boolean
+})[];
+
 export abstract class Command {
-  load(ctx: LoadExecContext): Promise<void> { return Promise.resolve(); }
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  load(_ctx: LoadExecContext): Promise<void> { return Promise.resolve(); }
   abstract getCommandString(): string[];
-  abstract getHelpMessage(): HelpMessage;
-  abstract onCommand(args: string[], ctx: CommandExecContext): CommandReturnType;
+  abstract getArguments(): CommandArguments;
+  abstract onCommand(ctx: CommandExecContext): Promise<void>;
 }

@@ -1,12 +1,14 @@
 ## v3.0.0
 
-First commit: TBD
+First commit: deeddcb4cb1081735e65191b6206573ecaa61bb7 (master)
 
 - Upon further rethinking, game is not going to be added to sasuke prism
 - Rewrote database engine to use SQLite
-  - MongoDB is a pain to setup for applications that's not enterprise scaled
+  - MongoDB is a pain to setup for applications that're not enterprise scaled
 - Adding more JSON to SIMD
 - Bump discord.js, typescript, and required node.js versions
+- Add slash command support
+  - Arguments are now fed to commands in a python-named-args-style interface
 
 ## v2.3.0
 
@@ -22,7 +24,6 @@ Last commit: 4068b1277addf4e22d621d5cdbb10e2647fb9a6f (master)
 - Make leveling up actually possible
 - Errors in command handlers no longer crash the process
 - Add item system (still WIP)
-- More features coming!
 
 ## v2.2.0
 

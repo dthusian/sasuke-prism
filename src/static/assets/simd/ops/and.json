@@ -1,0 +1,97 @@
+{
+  "title": "Bitwise AND",
+  "description": [
+    "Computes the bitwise AND of `a` and `b`, storing the results in `q`"],
+  "intrinsics": [
+    {
+      "signature": "__m128i _mm_and_epi32 (__m128i a, __m128i b)",
+      "vectorLength": 128,
+      "datatype": "i32",
+      "tech": "sse2"
+    },
+    {
+      "signature": "__m256i _mm256_and_epi32 (__m256i a, __m256i b)",
+      "vectorLength": 256,
+      "datatype": "i32",
+      "tech": "avx2"
+    },
+    {
+      "signature": "__m512i _mm512_and_epi32 (__m512i a, __m512i b)",
+      "vectorLength": 512,
+      "datatype": "i32",
+      "tech": "avx512dq"
+    },
+    {
+      "signature": "__m128i _mm_and_epi64 (__m128i a, __m128i b)",
+      "vectorLength": 128,
+      "datatype": "i64",
+      "tech": "sse2"
+    },
+    {
+      "signature": "__m256i _mm256_and_epi64 (__m256i a, __m256i b)",
+      "vectorLength": 256,
+      "datatype": "i64",
+      "tech": "avx2"
+    },
+    {
+      "signature": "__m512i _mm512_and_epi64 (__m512i a, __m512i b)",
+      "vectorLength": 512,
+      "datatype": "i64",
+      "tech": "avx512dq"
+    },
+    {
+      "signature": "__m128d _mm_and_pd (__m128d a, __m128d b)",
+      "vectorLength": 128,
+      "datatype": "f64",
+      "tech": "sse"
+    },
+    {
+      "signature": "__m256d _mm256_and_pd (__m256d a, __m256d b)",
+      "vectorLength": 256,
+      "datatype": "f64",
+      "tech": "avx"
+    },
+    {
+      "signature": "__m512d _mm512_and_pd (__m512d a, __m512d b)",
+      "vectorLength": 512,
+      "datatype": "f64",
+      "tech": "avx512f"
+    },
+    {
+      "signature": "__m128 _mm_and_ps (__m128 a, __m128 b)",
+      "vectorLength": 128,
+      "datatype": "f32",
+      "tech": "sse"
+    },
+    {
+      "signature": "__m256 _mm256_and_ps (__m256 a, __m256 b)",
+      "vectorLength": 256,
+      "datatype": "f32",
+      "tech": "avx"
+    },
+    {
+      "signature": "__m512 _mm512_and_ps (__m512 a, __m512 b)",
+      "vectorLength": 512,
+      "datatype": "f32",
+      "tech": "avx512f"
+    },
+    {
+      "signature": "__m128i _mm_and_si128 (__m128i a, __m128i b)",
+      "vectorLength": 128,
+      "datatype": "i128",
+      "tech": "sse2"
+    },
+    {
+      "signature": "__m256i _mm256_and_si256 (__m256i a, __m256i b)",
+      "vectorLength": 256,
+      "datatype": "i256",
+      "tech": "avx2"
+    },
+    {
+      "signature": "__m512i _mm512_and_si512 (__m512i a, __m512i b)",
+      "vectorLength": 512,
+      "datatype": "i512",
+      "tech": "avx512f"
+    }
+  ]
+}
